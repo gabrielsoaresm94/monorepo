@@ -1,0 +1,15 @@
+{
+  "name": "monorepo",
+  "version": "0.0.1",
+  "author": "Gabriel Soares <gabrielsoaresm94@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start:python": "sudo bash ./packages/python/start.sh"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  }
+}
