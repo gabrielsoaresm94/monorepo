@@ -1,3 +1,8 @@
+# Default
+node_modules
+*.copy
+*.copy.*
+
 # JPEG
 *.jpg
 *.jpeg
