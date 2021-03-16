@@ -5,12 +5,16 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "start": "lerna run start",
+    "start:dev": "lerna run start:dev",
+    "start:api": "lerna run --scope @monorepo/api start:dev",
     "start:python": "sudo bash ./packages/python/start.sh"
   },
   "devDependencies": {
     "@commitlint/cli": "9.1.1",
     "@commitlint/config-conventional": "9.1.1",
-    "husky": "4.2.5"
+    "husky": "4.2.5",
+    "lerna": "^4.0.0"
   },
   "workspaces": {
     "packages": [
