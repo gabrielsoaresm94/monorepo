@@ -21,8 +21,9 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
   },
-  // ignorePatterns: ["/*.*"],
-  workingDirectories: [
-    {"directory": "./", "changeProcessCWD": true}
-  ],
+  ignorePatterns: ["*.*"],
+  // workingDirectories: [
+  //   {"directory": "./", "changeProcessCWD": true}
+  // ],
+  // roots: ["."]
 };

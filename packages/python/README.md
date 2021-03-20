@@ -1,12 +1,13 @@
+# Python service
 TODO
 
-# Python service
+## Como instalar
+TODO
 
-# Como instalar
+## Como rodar
+TODO
 
-# Como rodar
-
-## TODO
+## Todo list
 - [ ] - Tratar imagens que não sejam de texto
 - [ ] - Trartar imagem para retornar um texto mais apurado
 - [ ] - Remover quebras de linha e espaços indesejados
