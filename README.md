@@ -19,6 +19,8 @@ TODO.
 ## Documentação de pacotes
 TODO.
 
+## Problemas e soluções
+* ESLint não localizava tsconfig - [issue](https://github.com/typescript-eslint/typescript-eslint/issues/251)
 ## Conteúdos e inspirações:
 * Monorepo pela Rocketseat - [vídeo](https://www.youtube.com/watch?v=k5TkBcUTJus&t=44s) e [repo](https://github.com/rocketseat-content/youtube-monorepo);
 * Monorepo Starter - [repo](https://github.com/palmerhq/monorepo-starter);
