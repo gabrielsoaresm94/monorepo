@@ -8,7 +8,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot(databaseConfig),
+        // TypeOrmModule.forRoot(databaseConfig),
         UsuariosModule,
         DocumentosModule,
         AudiosModule
