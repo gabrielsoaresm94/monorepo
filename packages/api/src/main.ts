@@ -1,8 +1,8 @@
-// import 'reflect-metadata';
+import 'reflect-metadata';
 import { AppModule } from './modules/app.module';
 import express from 'express';
 import { criaServidorNest } from './main.utils';
-// import './shared/typeorm';
+import './shared/typeorm';
 
 /**
  * Cria instância do servidor express
