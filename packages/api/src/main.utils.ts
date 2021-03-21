@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import express from 'express';
-import rateLimit from 'express-rate-limit';
-import Morgan, { StreamOptions } from 'morgan';
-import Helmet from 'helmet';
+import * as rateLimit from 'express-rate-limit';
+import * as Morgan from 'morgan';
+import { StreamOptions } from 'morgan';
+import * as Helmet from 'helmet';
 import {
     INestApplication,
     ValidationError,
@@ -69,7 +70,8 @@ export const adicionaMiddlewareRateLimit = (
         max: init.reqLimits.max,
     };
 
-    expressInstance.use(new rateLimit(reqLimits));
+    // TODO
+    // expressInstance.use(new rateLimit(reqLimits));
     expressInstance.set('trust proxy', 1);
 };
 
