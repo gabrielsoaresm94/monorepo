@@ -6,23 +6,27 @@ import {
     UpdateDateColumn,
     ManyToOne,
     JoinColumn,
+    OneToMany,
 } from 'typeorm';
-import Documento from './documento.entity';
+import Pagina from './pagina.entity';
 import Usuario from 'src/modules/usuarios/shared/typeorm/entities/usuario.entity';
 
-@Entity('paginas')
-class Pagina {
+@Entity('documentos')
+class Documento {
     @PrimaryGeneratedColumn('uuid')
-    pagina_id: string;
+    documento_id: string;
 
     @Column()
     nome: string;
 
     @Column()
-    tamanho: string | null;
+    descricao: string | null;
 
     @Column()
-    formato: string;
+    assunto: string | null;
+
+    @Column()
+    qtd_imagens: number;
 
     @CreateDateColumn()
     created_at: Date;
@@ -31,24 +35,20 @@ class Pagina {
     modified_at: Date;
 
     @Column()
-    documento_id: string;
-
-    @ManyToOne(
-        () => Documento,
-        documento => documento.paginas,
-    )
-    @JoinColumn({ name: 'documento_id' })
-    documento: Documento;
-
-    @Column()
     usuario_id: string;
+
+    @OneToMany(
+        () => Pagina,
+        pagina => pagina.usuario,
+    )
+    paginas: Pagina[];
 
     @ManyToOne(
         () => Usuario,
-        usuario => usuario.paginas,
+        usuario => usuario.documentos,
     )
     @JoinColumn({ name: 'usuario_id' })
     usuario: Usuario;
 }
 
-export default Pagina;
+export default Documento;

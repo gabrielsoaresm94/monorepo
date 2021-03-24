@@ -9,4 +9,16 @@ export class AudiosController {
     getHello(): string {
         return this.audiosService.getHello();
     }
+
+    /**
+     * TODO
+     * Métodos para geranciar áudios, de um documento, de um usuário.
+     * Para o gerenciamento dessa entidade, será necessário o package
+     * (serciço) Python, com o mesmo nome da linguagem utilizada.
+     */
+    // listaAudios();
+    // encontraAudio();
+    // criaAudio();
+    // editaAudio();
+    // removeAudio();
 }

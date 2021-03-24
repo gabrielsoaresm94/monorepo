@@ -7,13 +7,12 @@ import {
     ManyToOne,
     JoinColumn,
 } from 'typeorm';
-import Documento from './documento.entity';
 import Usuario from 'src/modules/usuarios/shared/typeorm/entities/usuario.entity';
 
-@Entity('paginas')
-class Pagina {
+@Entity('audios')
+class Audio {
     @PrimaryGeneratedColumn('uuid')
-    pagina_id: string;
+    audio_id: string;
 
     @Column()
     nome: string;
@@ -24,6 +23,12 @@ class Pagina {
     @Column()
     formato: string;
 
+    @Column()
+    assunto: string | null;
+
+    @Column()
+    descricao: string | null;
+
     @CreateDateColumn()
     created_at: Date;
 
@@ -31,24 +36,14 @@ class Pagina {
     modified_at: Date;
 
     @Column()
-    documento_id: string;
-
-    @ManyToOne(
-        () => Documento,
-        documento => documento.paginas,
-    )
-    @JoinColumn({ name: 'documento_id' })
-    documento: Documento;
-
-    @Column()
     usuario_id: string;
 
     @ManyToOne(
         () => Usuario,
-        usuario => usuario.paginas,
+        usuario => usuario.audios,
     )
     @JoinColumn({ name: 'usuario_id' })
     usuario: Usuario;
 }
 
-export default Pagina;
+export default Audio;

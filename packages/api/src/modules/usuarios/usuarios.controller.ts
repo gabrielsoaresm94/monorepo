@@ -8,6 +8,11 @@ import { UsuariosService } from './shared/services/http/usuarios.service';
 export class UsuariosController {
     constructor(private readonly usuariosService: UsuariosService) {}
 
+    @Get('usuarios')
+    getHello(): string {
+        return this.usuariosService.getHello();
+    }
+
     @Get()
     // @UseGuards(
     //   AuthGuard,
@@ -60,8 +65,27 @@ export class UsuariosController {
         }
     }
 
-    @Get('usuarios')
-    getHello(): string {
-        return this.usuariosService.getHello();
-    }
+    /**
+     * TODO
+     * Métodos privados para o administrador gerenciar usuários,
+     * não permitir edição da propriedade papel;
+     * Admin pode editar ou excluir outros admins?
+     */
+    // encontraUsuario();
+    // criaUsuario();
+    // editaUsuario();
+    // removeUsuario();
+
+    /**
+     * TODO
+     * Métodos públicos para o usuário poder se auto-gerenciar
+     */
+    // cadastraUsuario();
+    // resetaSenha();
+
+    /**
+     * Sessão de usuários
+     */
+    // login();
+    // logout();
 }
