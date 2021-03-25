@@ -26,6 +26,7 @@ export class UsuariosService {
          * Verifica role de quem chamou o método, caso não exista, cria um usuário;
          * Apenas admins podem criar admins;
          * Adicionar checagens para emails, utilizar regex se precisar;
+         *
          */
 
         const verificaEmail = await this.usuariosRepository.encontraPorEmail(email);
