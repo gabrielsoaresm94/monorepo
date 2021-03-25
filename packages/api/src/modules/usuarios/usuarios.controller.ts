@@ -1,7 +1,8 @@
-import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { MessageStatus } from 'src/shared/erros.helper';
+import { RequisicaoCriaUsuarioDTO } from './shared/dtos/req-post.dto';
 import { UsuariosService } from './shared/services/http/usuarios.service';
 
 @Controller()
@@ -46,7 +47,7 @@ export class UsuariosController {
             type: 'MessageStatus',
         },
     })
-    async listaUsuarios(@Res() res: Response): Promise<any> {
+    async listaUsuarios(@Res() res: Response): Promise<Response> {
         try {
             // console.log(process.env.USER, 1000);
 
@@ -72,7 +73,36 @@ export class UsuariosController {
      * Admin pode editar ou excluir outros admins?
      */
     // encontraUsuario();
-    // criaUsuario();
+    @Post('usuarios')
+    async criaUsuario(
+        @Body() dadosReqUsuario: RequisicaoCriaUsuarioDTO,
+        @Res() res: Response
+    ): Promise<Response> {
+        try {
+            const {nome, email, senha, papel} = dadosReqUsuario;
+
+            const dadosUsuario = await this.usuariosService.criaUsuario(
+                nome,
+                email,
+                senha,
+                papel
+            );
+
+            return res.status(HttpStatus.CREATED).json({
+                message:
+                    '[INFO] {criaUsuario} - Usuário criado com sucesso.',
+                metedata: dadosUsuario,
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {criaUsuario} - Problemas para criar usuário.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    };
     // editaUsuario();
     // removeUsuario();
 
