@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { geraHash } from 'src/shared/functions/utils';
+import { Role } from 'src/shared/guards/ role.enum';
 import Usuario from '../../typeorm/entities/usuario.entity';
 import UsuariosRepository from '../../typeorm/repositories/usuarios.repository';
 
@@ -19,14 +20,12 @@ export class UsuariosService {
         nome: string,
         email: string,
         senha: string,
-        papel: string,
+        papel: Role.ADMIN | Role.USUARIO,
     ): Promise<Usuario> {
         /**
          * TODO:
-         * Verifica role de quem chamou o método, caso não exista, cria um usuário;
-         * Apenas admins podem criar admins;
-         * Adicionar checagens para emails, utilizar regex se precisar;
-         *
+         * Adicionar rollback para caso dê algum problema na criação,
+         * procurar alguma maneira usando typeorm;
          */
 
         const verificaEmail = await this.usuariosRepository.encontraPorEmail(email);
