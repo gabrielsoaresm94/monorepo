@@ -4,11 +4,13 @@ from gtts import gTTS
 import os
 
 def converteImgParaTexto(enderecos):
+    # TODO Pedir essa informação da requisição
+    extencoes_de_imgs = ['.jpg', '.jpeg', '.png']
     textos = []
 
     # Trasnforma imagens em textos
     for endereco in enderecos:
-        if endereco.endswith('.jpg'):
+        if endereco.endswith(tuple(extencoes_de_imgs)):
             img = Image.open(endereco)
             textos.append(ocr.image_to_string(img, lang='por'))
 

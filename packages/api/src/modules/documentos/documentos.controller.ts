@@ -9,4 +9,15 @@ export class DocumentosController {
     getHello(): string {
         return this.documentosService.getHello();
     }
+
+    /**
+     * TODO
+     * Métodos para geranciar documentos, de um usuário,
+     * que contém 1 ou N páginas.
+     */
+    // listaDocumentos();
+    // encontraDocumento();
+    // criaDocumento();
+    // editaDocumento();
+    // removeDocumento();
 }

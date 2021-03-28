@@ -1,56 +1,36 @@
-// import { getRepository, Repository, Not } from 'typeorm';
-// import Usuario from '../models/usuario';
+import { InjectRepository } from '@nestjs/typeorm';
+import { getRepository, Repository, Not, EntityRepository } from 'typeorm';
+import { RequisicaoCriaUsuarioDTO } from '../../dtos/req-post.dto';
+import Usuario from '../entities/usuario.entity';
 
-// class UsersRepository implements IUsersRepository {
-//   private ormRepository: Repository<Usuario>;
+@EntityRepository(Usuario)
+class UsuariosRepository {
+    // implements IUsersRepository
 
-//   constructor() {
-//     this.ormRepository = getRepository(Usuario);
-//   }
+    constructor(
+        @InjectRepository(Usuario)
+        private ormRepository: Repository<Usuario>,
+    ) {}
 
-//   public async findById(id: string): Promise<Usuario | undefined> {
-//     const user = await this.ormRepository.findOne(id);
+    public async cria(
+        dadosReqUsuario: RequisicaoCriaUsuarioDTO,
+    ): Promise<Usuario> {
+        const usuario = this.ormRepository.create(dadosReqUsuario);
 
-//     return user;
-//   }
+        await this.ormRepository.save(usuario);
 
-//   public async findByEmail(email: string): Promise<Usuario | undefined> {
-//     const user = await this.ormRepository.findOne({
-//       where: { email },
-//     });
+        return usuario;
+    }
 
-//     return user;
-//   }
+    public async encontraPorEmail(
+        email: string,
+    ): Promise<Usuario | undefined> {
+        const usuario = await this.ormRepository.findOne({
+            where: { email },
+        });
 
-//   public async findAllProviders({
-//     except_user_id,
-//   }: IFindAllProvidersDTO): Promise<Usuario[]> {
-//     let users: Usuario[];
+        return usuario;
+    }
+}
 
-//     if (except_user_id) {
-//       users = await this.ormRepository.find({
-//         where: {
-//           id: Not(except_user_id),
-//         },
-//       });
-//     } else {
-//       users = await this.ormRepository.find();
-//     }
-
-//     return users;
-//   }
-
-//   public async create(userData: ICreateUsertDTO): Promise<Usuario> {
-//     const appointment = this.ormRepository.create(userData);
-
-//     await this.ormRepository.save(appointment);
-
-//     return appointment;
-//   }
-
-//   public async save(user: Usuario): Promise<Usuario> {
-//     return this.ormRepository.save(user);
-//   }
-// }
-
-// export default UsersRepository;
+export default UsuariosRepository;
