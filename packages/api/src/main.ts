@@ -1,4 +1,6 @@
 import 'reflect-metadata';
+import 'dotenv/config';
+
 import { AppModule } from './modules/app.module';
 import * as express from 'express';
 import { criaServidorNest } from './main.utils';

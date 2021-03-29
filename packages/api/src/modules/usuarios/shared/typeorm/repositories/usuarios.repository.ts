@@ -4,7 +4,7 @@ import { RequisicaoCriaUsuarioDTO } from '../../dtos/req-post.dto';
 import Usuario from '../entities/usuario.entity';
 
 @EntityRepository(Usuario)
-class UsuariosRepository {
+export class UsuariosRepository {
     // implements IUsersRepository
 
     constructor(
@@ -22,15 +22,18 @@ class UsuariosRepository {
         return usuario;
     }
 
-    public async encontraPorEmail(
-        email: string,
-    ): Promise<Usuario | undefined> {
+    public async encontraPorEmail(email: string): Promise<Usuario | undefined> {
         const usuario = await this.ormRepository.findOne({
             where: { email },
         });
 
         return usuario;
     }
-}
 
-export default UsuariosRepository;
+    public async encontraPorId(
+        usuario_id: string,
+    ): Promise<Usuario | undefined> {
+        const usuario = await this.ormRepository.findOne(usuario_id);
+        return usuario;
+    }
+}
