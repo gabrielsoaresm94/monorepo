@@ -13,8 +13,8 @@ import { AuthService } from './shared/services/http/auth.service';
         UsuariosModule,
         PassportModule,
         JwtModule.register({
-            secret: process.env.TOKEN_SEGREDO,
-            signOptions: { expiresIn: process.env.TOKEN_TEMPO_EXP },
+            secret: (process.env.TOKEN_SEGREDO).toString(),
+            signOptions: { expiresIn: Number(process.env.TOKEN_TEMPO_EXP) },
         }),
     ],
     controllers: [AuthController],

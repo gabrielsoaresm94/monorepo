@@ -2,13 +2,16 @@ import {
     Body,
     Controller,
     Get,
+    HttpCode,
     HttpStatus,
     Post,
+    Query,
     Res,
     UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
+    ApiBearerAuth,
     ApiForbiddenResponse,
     ApiInternalServerErrorResponse,
     ApiOkResponse,
@@ -23,6 +26,7 @@ import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { RequisicaoCriaUsuarioDTO } from './shared/dtos/req-post.dto';
 import { UsuariosService } from './shared/services/http/usuarios.service';
 
+@ApiTags('Usuários')
 @Controller('usuarios')
 export class UsuariosController {
     constructor(private readonly usuariosService: UsuariosService) {}
@@ -31,14 +35,15 @@ export class UsuariosController {
      * TODO
      * Adicionar paginação para listas;
      */
+    @HttpCode(200)
     @Get()
     // @UseGuards(
     //   AuthGuard,
     //   RolesGuard
-    // @Roles(PapelUsuario.ADMINISTRADOR)
-    // @ApiBearerAuth()
+    // )
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Listagem de usuários' })
     @ApiOkResponse({
         description: 'Consulta obtida com sucesso',
@@ -66,8 +71,15 @@ export class UsuariosController {
             type: 'MessageStatus',
         },
     })
-    async listaUsuarios(@Res() res: Response): Promise<Response> {
+    async listaUsuarios(
+        @Query() dadosReqListaaUsuario,
+        @Res() res: Response
+    ): Promise<Response> {
         try {
+            const {usuario, email} = dadosReqListaaUsuario;
+
+            // TODO
+
             return res.status(HttpStatus.OK).json({
                 message:
                     '[INFO] {listaUsuarios} - Usuários listados com sucesso',
@@ -88,6 +100,34 @@ export class UsuariosController {
     @Post()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Criação de usuário' })
+    @ApiOkResponse({
+        description: 'Criação realizada com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {POST - /usuarios} - Acesso negado',
+        schema: {
+            example: {
+                message: '[ERRO] {POST - /usuarios} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {POST - /usuarios} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {POST - /usuarios} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     async criaUsuario(
         @Body() dadosReqUsuario: RequisicaoCriaUsuarioDTO,
         @Res() res: Response,

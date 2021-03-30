@@ -5,11 +5,6 @@ import { DocumentosService } from './shared/services/http/documentos.service';
 export class DocumentosController {
     constructor(private readonly documentosService: DocumentosService) {}
 
-    @Get()
-    getHello(): string {
-        return this.documentosService.getHello();
-    }
-
     /**
      * TODO
      * Métodos para geranciar documentos, de um usuário,

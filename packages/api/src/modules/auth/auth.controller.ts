@@ -6,13 +6,17 @@ import {
     Post,
     Body,
     HttpException,
+    HttpCode,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { MessageStatus } from 'src/shared/erros.helper';
 import { UsuariosService } from '../usuarios/shared/services/http/usuarios.service';
 import { RequisicaoLoginDTO } from './shared/dtos/login.dto';
 import { RequisicaoRegistroDTO } from './shared/dtos/req-registro.dto';
 import { AuthService } from './shared/services/http/auth.service';
 
+@ApiTags('Autenticação')
 @Controller()
 export class AuthController {
     constructor(
@@ -20,7 +24,24 @@ export class AuthController {
         private readonly usuariosService: UsuariosService,
     ) {}
 
+    @HttpCode(201)
     @Post('cadastro')
+    @ApiOperation({ summary: 'Cadastra usuário' })
+    @ApiOkResponse({
+        description: 'Cadastro realizado com sucesso',
+        type: MessageStatus,
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {POST - /cadastro} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {POST - /cadastro} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     public async cadastro(
         @Body() dadosReqCadastroUsuario: RequisicaoRegistroDTO,
         @Response() res
@@ -45,7 +66,35 @@ export class AuthController {
         }
     }
 
+    @HttpCode(200)
     @Post('login')
+    @ApiOperation({ summary: 'Inicia sessão  usuário' })
+    @ApiOkResponse({
+        description: 'Sessão iniciada com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {POST - /login} - Acesso negado',
+        schema: {
+            example: {
+                message: '[ERRO] {POST - /login} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {POST - /login} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {POST - /login} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     public async login(@Response() res, @Body() login: RequisicaoLoginDTO) {
         try {
             const { email, senha } = login;

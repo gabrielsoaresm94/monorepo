@@ -30,14 +30,17 @@ export class AuthService {
         email: string;
         papel: string;
     }) {
-        const expiresIn = process.env.TOKEN_TEMPO_EXP;
+        console.log(process.env.TOKEN_TEMPO_EXP);
+        console.log(process.env.TOKEN_SEGREDO);
+
+        const expiresIn = Number(process.env.TOKEN_TEMPO_EXP);
         const accessToken = jwt.sign(
             {
                 id: usuario.usuario_id,
                 email: usuario.email,
                 nome: usuario.nome,
             },
-            process.env.TOKEN_SEGREDO,
+            (process.env.TOKEN_SEGREDO).toString(),
             { expiresIn },
         );
         return {
