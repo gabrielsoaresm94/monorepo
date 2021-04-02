@@ -1,7 +1,6 @@
 import { IsEmail, IsNotEmpty } from "class-validator";
-import { Role } from "src/shared/guards/ role.enum";
 
-export class RequisicaoCriaUsuarioDTO {
+export class RequisicaoRegistroDTO {
     @IsNotEmpty()
     nome: string;
 
@@ -11,7 +10,4 @@ export class RequisicaoCriaUsuarioDTO {
 
     @IsNotEmpty()
     senha: string;
-
-    @IsNotEmpty()
-    papel: Role.ADMIN | Role.USUARIO;
 }

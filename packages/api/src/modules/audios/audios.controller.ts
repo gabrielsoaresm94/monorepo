@@ -5,11 +5,6 @@ import { AudiosService } from './shared/services/http/audios.service';
 export class AudiosController {
     constructor(private readonly audiosService: AudiosService) {}
 
-    @Get()
-    getHello(): string {
-        return this.audiosService.getHello();
-    }
-
     /**
      * TODO
      * Métodos para geranciar áudios, de um documento, de um usuário.

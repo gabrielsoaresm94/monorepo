@@ -26,3 +26,4 @@ TODO.
 * Monorepo Starter - [repo](https://github.com/palmerhq/monorepo-starter);
 * NestJS Mono repo starter - [repo](https://github.com/scopsy/nestjs-monorepo-starter);
 * NestJS mono-repo starter - [repo](https://github.com/BrunnerLivio/nestjs-monorepo-starter);
+* NestJS auth - [Codebrains artigo](https://codebrains.io/nest-js-express-jwt-authentication-with-typeorm-and-passport/) e [wanago.io](https://wanago.io/2020/05/25/api-nestjs-authenticating-users-bcrypt-passport-jwt-cookies/);
