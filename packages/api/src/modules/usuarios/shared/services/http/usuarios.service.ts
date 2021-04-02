@@ -1,5 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { geraHash } from 'src/shared/functions/utils';
 import { Role } from 'src/shared/guards/ role.enum';
 import Usuario from '../../typeorm/entities/usuario.entity';
@@ -10,12 +9,6 @@ export class UsuariosService {
     constructor(
         private usuariosRepository: UsuariosRepository,
     ) {}
-
-    // private readonly logger = new Logger();
-
-    getHello(): string {
-        return 'Hello World!';
-    }
 
     public async criaUsuario(
         nome: string,
@@ -69,40 +62,76 @@ export class UsuariosService {
         return usuario;
     }
 
-    /**
-     * TODO
-     */
-    public async listaUsuarios({
-        id,
-        email,
-    }: {
-        id?: string;
-        email?: string;
-    }): Promise<Array<Usuario>> {
-        const usuarios = [];
+    public async listaUsuarios(
+        id: string,
+        email: string
+    ): Promise<Array<Usuario>> {
+        let usuarios: Array<Usuario> = [];
         let usuario: Usuario;
 
-        if (id && email) {
-            usuario = await this.usuariosRepository.encontraPorId(id);
-            if (usuario) {
-                usuarios.push(usuario);
-            }
-        } else if (id || email) {
+        if (id || email) {
             if (id) {
                 usuario = await this.usuariosRepository.encontraPorId(id);
                 if (usuario) {
                     usuarios.push(usuario);
                 }
-            } else if (email) {
+            }
+
+            if (email) {
                 usuario = await this.usuariosRepository.encontraPorEmail(email);
                 if (usuario) {
                     usuarios.push(usuario);
                 }
             }
         } else {
-            // TODO - consumir repository para listar todos os usuários;
-            // TODO - adicinar paginação;
+            usuarios = await this.usuariosRepository.listaUsuarios();
         }
         return usuarios;
     }
+
+    public async editaUsuario(
+        chaveUsuario: string,
+        nome: string,
+        email: string,
+        papel: Role
+    ): Promise<Usuario> {
+        const consultaUsuario = await this.usuariosRepository.encontraPorId(chaveUsuario);
+
+        if (!consultaUsuario) {
+            console.log('Usuário não encontrado!');
+            throw new Error('Usuário não encontrado!');
+        }
+
+        if (nome) {
+            consultaUsuario.nome = nome;
+        }
+
+        if (email) {
+            const verificaEmail = await this.usuariosRepository.encontraPorEmail(email);
+
+            if (verificaEmail) {
+                console.log('Email já está sendo usado!');
+                throw new Error('Email já está sendo usado!');
+            }
+
+            consultaUsuario.email = email;
+        }
+
+        if (papel) {
+            consultaUsuario.papel = papel;
+        }
+
+        const editaUsuario = await this.usuariosRepository.salva(consultaUsuario);
+
+        return editaUsuario;
+    }
+
+    // public async removeUsuario(usuario_id: string): Promise<Usuario> {
+    //     const usuario = await this.usuariosRepository.encontraPorId(usuario_id);
+
+    //     if (!usuario) {
+    //         throw new Error('Usuário não encontrado!');
+    //     }
+    //     return usuario;
+    // }
 }

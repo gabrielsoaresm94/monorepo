@@ -22,6 +22,10 @@ export class UsuariosRepository {
         return usuario;
     }
 
+    public async salva(usuario: Usuario): Promise<Usuario> {
+        return await this.ormRepository.save(usuario);
+    }
+
     public async encontraPorEmail(email: string): Promise<Usuario | undefined> {
         const usuario = await this.ormRepository.findOne({
             where: { email },
@@ -35,5 +39,10 @@ export class UsuariosRepository {
     ): Promise<Usuario | undefined> {
         const usuario = await this.ormRepository.findOne(usuario_id);
         return usuario;
+    }
+
+    public async listaUsuarios(): Promise<Array<Usuario>> {
+        const usuarios = await this.ormRepository.find();
+        return usuarios;
     }
 }
