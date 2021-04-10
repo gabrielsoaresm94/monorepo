@@ -76,11 +76,11 @@ export class UsuariosController {
         },
     })
     async listaUsuarios(
-        @Query() dadosReqListaaUsuario,
+        @Query() dadosReqListaUsuario,
         @Res() res: Response
     ): Promise<Response> {
         try {
-            const {usuario, email} = dadosReqListaaUsuario;
+            const {usuario, email} = dadosReqListaUsuario;
 
             const usuarios = await this.usuariosService.listaUsuarios(
                 usuario,

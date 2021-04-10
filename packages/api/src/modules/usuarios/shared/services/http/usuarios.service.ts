@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as _ from 'lodash';
 import { geraHash } from 'src/shared/functions/utils';
 import { Role } from 'src/shared/guards/ role.enum';
 import Usuario from '../../typeorm/entities/usuario.entity';
@@ -86,7 +87,10 @@ export class UsuariosService {
         } else {
             usuarios = await this.usuariosRepository.listaUsuarios();
         }
-        return usuarios;
+
+        const usuariosSemDuplicatas = _.uniqBy(usuarios, 'usuario_id');
+
+        return usuariosSemDuplicatas;
     }
 
     public async editaUsuario(
