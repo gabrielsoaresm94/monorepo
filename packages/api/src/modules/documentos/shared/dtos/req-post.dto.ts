@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator';
 
 export class RequisicaoCriaDocumentoDTO {
     @IsNotEmpty()
@@ -7,7 +7,4 @@ export class RequisicaoCriaDocumentoDTO {
     descricao: string;
 
     assunto: string;
-
-    @IsNotEmpty()
-    qtd_imagens: number;
 }

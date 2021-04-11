@@ -65,7 +65,6 @@ export const imageFileFilter = (req, file, callback) => {
  * @param callback
  */
 export const editFileName = (req, file, callback) => {
-
     // const stats = fs.statSync(file.originalname)
     // const fileSizeInBytes = stats.size;
     // // Convert the file size to megabytes (optional)

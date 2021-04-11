@@ -5,6 +5,7 @@ import Documento from '../entities/documento.entity';
 
 class CriaDocumento extends RequisicaoCriaDocumentoDTO {
     usuario_id: string;
+    qtd_imagens: number;
 }
 
 @EntityRepository(Documento)
@@ -27,7 +28,7 @@ export class DocumentosRepository {
     public async lista(usuario_id: string): Promise<Array<Documento>> {
         const documentos = await this.ormRepository.find({
             where: [{ usuario_id: usuario_id }],
-            relations: ['paginas'],
+            // relations: ['paginas'],
         });
 
         return documentos;
@@ -38,8 +39,8 @@ export class DocumentosRepository {
         documento_id: string,
     ): Promise<Documento> {
         const documento = await this.ormRepository.find({
-            where: [{usuario_id: usuario_id, documento_id: documento_id }],
-            relations: ['paginas'],
+            where: [{ usuario_id: usuario_id, documento_id: documento_id }],
+            // relations: ['paginas'],
         });
 
         const documentoEncontrado = documento[0];

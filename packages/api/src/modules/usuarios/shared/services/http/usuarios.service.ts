@@ -7,9 +7,7 @@ import { UsuariosRepository } from '../../typeorm/repositories/usuarios.reposito
 
 @Injectable()
 export class UsuariosService {
-    constructor(
-        private usuariosRepository: UsuariosRepository,
-    ) {}
+    constructor(private usuariosRepository: UsuariosRepository) {}
 
     public async criaUsuario(
         nome: string,
@@ -65,7 +63,7 @@ export class UsuariosService {
 
     public async listaUsuarios(
         id: string,
-        email: string
+        email: string,
     ): Promise<Array<Usuario>> {
         let usuarios: Array<Usuario> = [];
         let usuario: Usuario;
@@ -97,9 +95,11 @@ export class UsuariosService {
         chaveUsuario: string,
         nome: string,
         email: string,
-        papel: Role
+        papel: Role,
     ): Promise<Usuario> {
-        const consultaUsuario = await this.usuariosRepository.encontraPorId(chaveUsuario);
+        const consultaUsuario = await this.usuariosRepository.encontraPorId(
+            chaveUsuario,
+        );
 
         if (!consultaUsuario) {
             console.log('Usuário não encontrado!');
@@ -111,7 +111,9 @@ export class UsuariosService {
         }
 
         if (email) {
-            const verificaEmail = await this.usuariosRepository.encontraPorEmail(email);
+            const verificaEmail = await this.usuariosRepository.encontraPorEmail(
+                email,
+            );
 
             if (verificaEmail) {
                 console.log('Email já está sendo usado!');
@@ -125,7 +127,9 @@ export class UsuariosService {
             consultaUsuario.papel = papel;
         }
 
-        const editaUsuario = await this.usuariosRepository.salva(consultaUsuario);
+        const editaUsuario = await this.usuariosRepository.salva(
+            consultaUsuario,
+        );
 
         return editaUsuario;
     }

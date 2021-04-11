@@ -17,14 +17,10 @@ export class PaginasRepository {
         private ormRepository: Repository<Pagina>,
     ) {}
 
-    public async cria(
-        dadosPagina: CriaPagina,
-    ): Promise<Partial<Pagina>> {
+    public async cria(dadosPagina: CriaPagina): Promise<Partial<Pagina>> {
         const pagina = this.ormRepository.create(dadosPagina);
 
         await this.ormRepository.save(pagina);
-
-        // const pagina = dadosPagina;
 
         return pagina;
     }

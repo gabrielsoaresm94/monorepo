@@ -9,6 +9,6 @@ import { UsuariosController } from './usuarios.controller';
     imports: [TypeOrmModule.forFeature([Usuario])],
     controllers: [UsuariosController],
     providers: [UsuariosService, UsuariosRepository],
-    exports: [UsuariosRepository]
+    exports: [UsuariosRepository],
 })
 export class UsuariosModule {}

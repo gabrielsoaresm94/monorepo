@@ -13,7 +13,7 @@ import { AuthModule } from './auth/auth.module';
         UsuariosModule,
         DocumentosModule,
         AudiosModule,
-        AuthModule
+        AuthModule,
     ],
     controllers: [],
     providers: [],

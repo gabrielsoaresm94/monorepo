@@ -7,11 +7,13 @@ import Pagina from './shared/typeorm/entities/pagina.entity';
 import { DocumentosRepository } from './shared/typeorm/repositories/documentos.repository';
 import { PaginasRepository } from './shared/typeorm/repositories/paginas.repository';
 
-
 @Module({
-    imports: [TypeOrmModule.forFeature([Documento]), TypeOrmModule.forFeature([Pagina])],
+    imports: [
+        TypeOrmModule.forFeature([Documento]),
+        TypeOrmModule.forFeature([Pagina]),
+    ],
     controllers: [DocumentosController],
     providers: [DocumentosService, DocumentosRepository, PaginasRepository],
-    exports: [DocumentosRepository, PaginasRepository]
+    exports: [DocumentosRepository, PaginasRepository],
 })
 export class DocumentosModule {}

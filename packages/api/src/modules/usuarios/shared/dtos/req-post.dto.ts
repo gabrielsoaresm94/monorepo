@@ -1,5 +1,5 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
-import { Role } from "src/shared/guards/ role.enum";
+import { IsEmail, IsNotEmpty } from 'class-validator';
+import { Role } from 'src/shared/guards/ role.enum';
 
 export class RequisicaoCriaUsuarioDTO {
     @IsNotEmpty()

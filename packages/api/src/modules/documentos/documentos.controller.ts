@@ -28,6 +28,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { Roles } from 'src/shared/guards/roles.decorator';
 import { Role } from 'src/shared/guards/ role.enum';
+import { RequisicaoCriaDocumentoDTO } from './shared/dtos/req-post.dto';
+import { RequisicaoListaDocumentosDTO } from './shared/dtos/req-get.dto';
 
 @ApiTags('Documentos')
 @Controller('documentos')
@@ -41,17 +43,24 @@ export class DocumentosController {
     // editaDocumento();
     // removeDocumento();
 
+    /**
+     * TODO - relacionamento com páginas dando problema
+     */
     @HttpCode(200)
     @Get()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN, Role.USUARIO)
     async listaDocumentos(
-        @Query() dadosReqListaDocumentos,
+        @Query() dadosReqListaDocumentos: RequisicaoListaDocumentosDTO,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
-    ) {
+    ): Promise<Response> {
         try {
-            const documentos = await this.documentosService.listaDocumentos(usuario_id);
+            const { assunto } = dadosReqListaDocumentos;
+
+            const documentos = await this.documentosService.listaDocumentos(
+                usuario_id,
+            );
 
             return res.status(HttpStatus.CREATED).json({
                 message:
@@ -77,10 +86,13 @@ export class DocumentosController {
         @Param() chaveDocumento: { documento_id: string },
         @RequestUser() usuario_id: string,
         @Res() res: Response,
-    ) {
+    ): Promise<Response> {
         try {
             const { documento_id } = chaveDocumento;
-            const documento = await this.documentosService.encontraDocumento(usuario_id, documento_id);
+            const documento = await this.documentosService.encontraDocumento(
+                usuario_id,
+                documento_id,
+            );
 
             return res.status(HttpStatus.CREATED).json({
                 message:
@@ -112,11 +124,11 @@ export class DocumentosController {
         }),
     )
     async criaDocumento(
-        @Query() dadosReqCriaDocumento,
+        @Query() dadosReqCriaDocumento: RequisicaoCriaDocumentoDTO,
         @UploadedFiles() paginas,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
-    ) {
+    ): Promise<Response> {
         try {
             const { nome, descricao, assunto } = dadosReqCriaDocumento;
 
@@ -129,8 +141,8 @@ export class DocumentosController {
                 const fileReponse = {
                     nome_original: file.originalname,
                     nome_arquivo: file.filename,
-                    size: file.size / (1024*1024),
-                    format: file.mimetype
+                    size: file.size / (1024 * 1024),
+                    format: file.mimetype,
                 };
                 imagens.push(fileReponse);
             });
@@ -140,13 +152,13 @@ export class DocumentosController {
                 nome,
                 descricao,
                 assunto,
-                imagens.length
+                imagens.length,
             );
 
             if (documento) {
                 for (const objPagina of imagens) {
                     const nome = objPagina.nome_arquivo;
-                    const tamanho = `${(objPagina.size).toFixed(2)} mb`;
+                    const tamanho = `${objPagina.size.toFixed(2)} mb`;
                     const formato = objPagina.format;
 
                     const pagina = await this.documentosService.criaPagina(
@@ -154,7 +166,7 @@ export class DocumentosController {
                         documento.documento_id,
                         nome,
                         tamanho,
-                        formato
+                        formato,
                     );
 
                     if (!pagina) {
@@ -168,7 +180,7 @@ export class DocumentosController {
                         '[ERRO] {criaDocumento} - Problemas para criar documento.',
                     metadata: {
                         documento_id: documento.documento_id,
-                        nome: documento.nome
+                        nome: documento.nome,
                     },
                     status: true,
                 });
