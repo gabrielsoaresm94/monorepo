@@ -18,17 +18,12 @@ export class DocumentosService {
         assunto: string,
         qtd_imagens: number,
     ): Promise<Partial<Documento>> {
-        /**
-         * TODO:
-         * Adicionar rollback para caso dê algum problema na criação,
-         * procurar alguma maneira usando typeorm;
-         */
         const documento = await this.documentosRepository.cria({
             nome,
             descricao: descricao || null,
             assunto: assunto || null,
             qtd_imagens,
-            usuario_id: chave_usuario
+            usuario_id: chave_usuario,
         });
 
         return documento;
@@ -41,19 +36,26 @@ export class DocumentosService {
         tamanho: string,
         formato: string,
     ): Promise<Partial<Pagina>> {
-        /**
-         * TODO:
-         * Adicionar rollback para caso dê algum problema na criação,
-         * procurar alguma maneira usando typeorm;
-         */
         const pagina = await this.paginasRepository.cria({
             nome,
             tamanho: tamanho || null,
             formato,
             documento_id: chave_documento,
-            usuario_id: chave_usuario
+            usuario_id: chave_usuario,
         });
 
         return pagina;
+    }
+
+    public async listaDocumentos(usuario_id: string): Promise<Array<Documento>> {
+        const documentos = await this.documentosRepository.lista(usuario_id);
+
+        return documentos;
+    }
+
+    public async encontraDocumento(usuario_id: string, documento_id: string): Promise<Documento> {
+        const documento = await this.documentosRepository.encontra(usuario_id, documento_id);
+
+        return documento;
     }
 }

@@ -17,12 +17,33 @@ export class DocumentosRepository {
     public async cria(
         dadosReqDocumento: CriaDocumento,
     ): Promise<Partial<Documento>> {
-        // const documento = this.ormRepository.create(dadosReqDocumento);
+        const documento = this.ormRepository.create(dadosReqDocumento);
 
-        // await this.ormRepository.save(documento);
-
-        const documento = dadosReqDocumento;
+        await this.ormRepository.save(documento);
 
         return documento;
+    }
+
+    public async lista(usuario_id: string): Promise<Array<Documento>> {
+        const documentos = await this.ormRepository.find({
+            where: [{ usuario_id: usuario_id }],
+            relations: ['paginas'],
+        });
+
+        return documentos;
+    }
+
+    public async encontra(
+        usuario_id: string,
+        documento_id: string,
+    ): Promise<Documento> {
+        const documento = await this.ormRepository.find({
+            where: [{usuario_id: usuario_id, documento_id: documento_id }],
+            relations: ['paginas'],
+        });
+
+        const documentoEncontrado = documento[0];
+
+        return documentoEncontrado;
     }
 }

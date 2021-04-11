@@ -5,6 +5,7 @@ import {
     Get,
     HttpCode,
     HttpStatus,
+    Param,
     Post,
     Query,
     Res,
@@ -34,14 +35,68 @@ export class DocumentosController {
     constructor(private readonly documentosService: DocumentosService) {}
 
     /**
-     * TODO
-     * Métodos para geranciar documentos, de um usuário,
-     * que contém 1 ou N páginas.
+     * TODO - Adicionar DTOs,
+     * num futuro rolbacks
      */
-    // listaDocumentos();
-    // encontraDocumento();
     // editaDocumento();
     // removeDocumento();
+
+    @HttpCode(200)
+    @Get()
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.ADMIN, Role.USUARIO)
+    async listaDocumentos(
+        @Query() dadosReqListaDocumentos,
+        @RequestUser() usuario_id: string,
+        @Res() res: Response,
+    ) {
+        try {
+            const documentos = await this.documentosService.listaDocumentos(usuario_id);
+
+            return res.status(HttpStatus.CREATED).json({
+                message:
+                    '[INFO] {listaDocumentos} - Documentos listados com sucesso.',
+                metadata: documentos,
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {listaDocumentos} - Problemas para listar documentos.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
+
+    @HttpCode(200)
+    @Get(':documento_id')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.ADMIN, Role.USUARIO)
+    async encontraDocumento(
+        @Param() chaveDocumento: { documento_id: string },
+        @RequestUser() usuario_id: string,
+        @Res() res: Response,
+    ) {
+        try {
+            const { documento_id } = chaveDocumento;
+            const documento = await this.documentosService.encontraDocumento(usuario_id, documento_id);
+
+            return res.status(HttpStatus.CREATED).json({
+                message:
+                    '[INFO] {encontraDocumento} - Documento encotrado com sucesso.',
+                metadata: documento,
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {encontraDocumento} - Problemas para encontrar documento.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
 
     @HttpCode(201)
     @Post()
@@ -87,7 +142,6 @@ export class DocumentosController {
                 assunto,
                 imagens.length
             );
-            const paginasCriadas = [];
 
             if (documento) {
                 for (const objPagina of imagens) {
@@ -103,25 +157,25 @@ export class DocumentosController {
                         formato
                     );
 
-                    paginasCriadas.push(pagina);
-
                     if (!pagina) {
                         // TODO - remover página criada.
                     }
                 }
             } else {
                 // TODO - remover documnto criado.
-            }
-
-            if (!documento.paginas) {
-                documento.paginas = paginasCriadas;
+                return res.status(HttpStatus.CREATED).json({
+                    message:
+                        '[ERRO] {criaDocumento} - Problemas para criar documento.',
+                    metadata: {
+                        documento_id: documento.documento_id,
+                        nome: documento.nome
+                    },
+                    status: true,
+                });
             }
 
             /**
-             * Services e repositories para:
-             * Salvar documento,
-             * Salvar página,
-             * Rolback não funciona na controller :/
+             * TODO - Rolback, para problemas no auth não funciona na controller :/
              */
             return res.status(HttpStatus.CREATED).json({
                 message:
