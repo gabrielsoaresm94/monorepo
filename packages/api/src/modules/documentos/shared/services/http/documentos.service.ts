@@ -47,14 +47,42 @@ export class DocumentosService {
         return pagina;
     }
 
-    public async listaDocumentos(usuario_id: string): Promise<Array<Documento>> {
-        const documentos = await this.documentosRepository.lista(usuario_id);
+    public async listaDocumentos(
+        usuario_id: string,
+        assunto: string,
+    ): Promise<Array<Documento>> {
+        let documentos = await this.documentosRepository.lista(usuario_id);
+        const paginas = await this.paginasRepository.lista(usuario_id);
+
+        for (const documento of documentos) {
+            documento.paginas = [];
+
+            for (const pagina of paginas) {
+                if (pagina.documento_id === documento.documento_id) {
+                    documento.paginas.push(pagina);
+                }
+            }
+        }
+
+        documentos = !assunto ? documentos : documentos.filter((doc) => { return doc.assunto === assunto })
 
         return documentos;
     }
 
-    public async encontraDocumento(usuario_id: string, documento_id: string): Promise<Documento> {
-        const documento = await this.documentosRepository.encontra(usuario_id, documento_id);
+    public async encontraDocumento(
+        usuario_id: string,
+        documento_id: string,
+    ): Promise<Documento> {
+        const documento = await this.documentosRepository.encontra(
+            usuario_id,
+            documento_id,
+        );
+        const paginas = await this.paginasRepository.encontra(
+            usuario_id,
+            documento_id,
+        );
+
+        documento.paginas = !paginas ? [] : paginas;
 
         return documento;
     }

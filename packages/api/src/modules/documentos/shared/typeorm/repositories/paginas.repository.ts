@@ -24,4 +24,23 @@ export class PaginasRepository {
 
         return pagina;
     }
+
+    public async lista(usuario_id: string): Promise<Array<Pagina>> {
+        const paginas = await this.ormRepository.find({
+            where: [{ usuario_id: usuario_id }],
+        });
+
+        return paginas;
+    }
+
+    public async encontra(
+        usuario_id: string,
+        documento_id: string,
+    ): Promise<Array<Pagina>> {
+        const paginas = await this.ormRepository.find({
+            where: [{ usuario_id: usuario_id, documento_id: documento_id }],
+        });
+
+        return paginas;
+    }
 }

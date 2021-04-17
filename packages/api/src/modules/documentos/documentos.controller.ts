@@ -37,8 +37,6 @@ export class DocumentosController {
     constructor(private readonly documentosService: DocumentosService) {}
 
     /**
-     * TODO - Adicionar DTOs,
-     * num futuro rolbacks
      */
     // editaDocumento();
     // removeDocumento();
@@ -60,6 +58,7 @@ export class DocumentosController {
 
             const documentos = await this.documentosService.listaDocumentos(
                 usuario_id,
+                assunto
             );
 
             return res.status(HttpStatus.CREATED).json({

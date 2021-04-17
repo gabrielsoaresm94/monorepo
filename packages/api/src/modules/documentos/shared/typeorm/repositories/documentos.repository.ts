@@ -28,7 +28,6 @@ export class DocumentosRepository {
     public async lista(usuario_id: string): Promise<Array<Documento>> {
         const documentos = await this.ormRepository.find({
             where: [{ usuario_id: usuario_id }],
-            // relations: ['paginas'],
         });
 
         return documentos;
@@ -40,7 +39,6 @@ export class DocumentosRepository {
     ): Promise<Documento> {
         const documento = await this.ormRepository.find({
             where: [{ usuario_id: usuario_id, documento_id: documento_id }],
-            // relations: ['paginas'],
         });
 
         const documentoEncontrado = documento[0];
