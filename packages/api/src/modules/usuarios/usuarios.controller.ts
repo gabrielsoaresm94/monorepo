@@ -22,6 +22,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import { RequestUser } from 'src/shared/decorators/req-user.decorator';
 import { MessageStatus } from 'src/shared/erros.helper';
 import { Role } from 'src/shared/guards/ role.enum';
 import { Roles } from 'src/shared/guards/roles.decorator';
@@ -32,7 +33,7 @@ import { RequisicaoEditaUsuarioDTO } from './shared/dtos/req-put.dto';
 import { UsuariosService } from './shared/services/http/usuarios.service';
 
 @ApiTags('Usuários')
-@Controller('usuarios')
+@Controller()
 export class UsuariosController {
     constructor(private readonly usuariosService: UsuariosService) {}
 
@@ -41,7 +42,7 @@ export class UsuariosController {
      * Adicionar paginação para listas;
      */
     @HttpCode(200)
-    @Get()
+    @Get('usuarios')
     // @UseGuards(
     //   AuthGuard,
     //   RolesGuard
@@ -105,7 +106,7 @@ export class UsuariosController {
     }
 
     @HttpCode(200)
-    @Get(':usuario_id')
+    @Get('usuarios/:usuario_id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -165,7 +166,7 @@ export class UsuariosController {
     }
 
     @HttpCode(201)
-    @Post()
+    @Post('usuarios')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -226,7 +227,7 @@ export class UsuariosController {
     }
 
     @HttpCode(200)
-    @Put(':usuario_id')
+    @Put('usuarios/:usuario_id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -291,7 +292,7 @@ export class UsuariosController {
     }
 
     @HttpCode(200)
-    @Delete(':usuario_id')
+    @Delete('usuarios/:usuario_id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -350,10 +351,71 @@ export class UsuariosController {
     }
 
     /**
-     * TODO
      * Métodos públicos para o usuário poder se auto-gerenciar
+     * TODO
+     * resetaSenha();
      */
-    // perfil();
-    // editarPerfil();
-    // resetaSenha();
+    @HttpCode(200)
+    @Get('perfil')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    async perfil(
+        @RequestUser() usuario_id: string,
+        @Res() res: Response,
+    ): Promise<Response> {
+        try {
+            const usuario = await this.usuariosService.encontraUsuario(
+                usuario_id,
+            );
+
+            return res.status(HttpStatus.OK).json({
+                message: '[INFO] {perfil} - Perfil encontrado com sucesso.',
+                metadata: usuario,
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {perfil} - Problemas para encontrar perfil do usuário.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
+
+    @HttpCode(200)
+    @Put('perfil')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    async editarPerfil(
+        @Body() dadosReqUsuario: Partial<RequisicaoEditaUsuarioDTO>,
+        @RequestUser() usuario_id: string,
+        @Res() res: Response,
+    ): Promise<Response> {
+        try {
+            const { nome, email } = dadosReqUsuario;
+
+            const usuario = await this.usuariosService.encontraUsuario(
+                usuario_id,
+            );
+
+            const usuarioEditado = await this.usuariosService.editaUsuario(
+                usuario_id,
+                nome,
+                email,
+                usuario.papel as Role
+            );
+
+            return res.status(HttpStatus.OK).json({
+                message: '[INFO] {editarPerfil} - Perfil editado com sucesso.',
+                metadata: usuarioEditado,
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {editarPerfil} - Problemas para editar perfil do usuário.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
 }
