@@ -25,6 +25,10 @@ export class DocumentosRepository {
         return documento;
     }
 
+    public async salva(documento: Documento): Promise<Documento> {
+        return await this.ormRepository.save(documento);
+    }
+
     public async lista(usuario_id: string): Promise<Array<Documento>> {
         const documentos = await this.ormRepository.find({
             where: [{ usuario_id: usuario_id }],

@@ -266,9 +266,9 @@ export class UsuariosController {
     ): Promise<Response> {
         try {
             const { usuario_id } = chaveUsuario;
-            let { nome, email, papel } = dadosReqUsuario;
+            const { nome, email, papel } = dadosReqUsuario;
 
-            const editaUsuario = await this.usuariosService.editaUsuario(
+            const usuarioEditado = await this.usuariosService.editaUsuario(
                 usuario_id,
                 nome,
                 email,
@@ -277,7 +277,7 @@ export class UsuariosController {
 
             return res.status(HttpStatus.OK).json({
                 message: '[INFO] {editaUsuario} - Usuário editado com sucesso.',
-                metedata: editaUsuario,
+                metedata: usuarioEditado,
                 status: true,
             });
         } catch (erro) {

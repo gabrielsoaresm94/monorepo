@@ -7,6 +7,7 @@ import {
     HttpStatus,
     Param,
     Post,
+    Put,
     Query,
     Res,
     UploadedFile,
@@ -38,12 +39,46 @@ export class DocumentosController {
 
     /**
      */
-    // editaDocumento();
     // removeDocumento();
 
-    /**
-     * TODO - relacionamento com páginas dando problema
-     */
+    @HttpCode(200)
+    @Put(':documento_id')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.ADMIN, Role.USUARIO)
+    async editaDocumento(
+        @Param() chaveDocumento: { documento_id: string },
+        @RequestUser() usuario_id: string,
+        @Body() dadosReqUsuario: Partial<RequisicaoCriaDocumentoDTO>,
+        @Res() res: Response,
+    ): Promise<Response> {
+        try {
+            const { documento_id } = chaveDocumento;
+            const { nome, descricao, assunto } = dadosReqUsuario;
+
+            const documentoEditado = await this.documentosService.editaDocumento(
+                usuario_id,
+                documento_id,
+                nome,
+                descricao,
+                assunto
+            );
+
+            return res.status(HttpStatus.OK).json({
+                message:
+                    '[INFO] {editaDocumento} - Documento editado com sucesso.',
+                metadata: documentoEditado,
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {editaDocumento} - Problemas para editar documento.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
+
     @HttpCode(200)
     @Get()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -61,7 +96,7 @@ export class DocumentosController {
                 assunto
             );
 
-            return res.status(HttpStatus.CREATED).json({
+            return res.status(HttpStatus.OK).json({
                 message:
                     '[INFO] {listaDocumentos} - Documentos listados com sucesso.',
                 metadata: documentos,
@@ -93,7 +128,7 @@ export class DocumentosController {
                 documento_id,
             );
 
-            return res.status(HttpStatus.CREATED).json({
+            return res.status(HttpStatus.OK).json({
                 message:
                     '[INFO] {encontraDocumento} - Documento encotrado com sucesso.',
                 metadata: documento,
@@ -174,7 +209,7 @@ export class DocumentosController {
                 }
             } else {
                 // TODO - remover documnto criado.
-                return res.status(HttpStatus.CREATED).json({
+                return res.status(HttpStatus.BAD_REQUEST).json({
                     message:
                         '[ERRO] {criaDocumento} - Problemas para criar documento.',
                     metadata: {

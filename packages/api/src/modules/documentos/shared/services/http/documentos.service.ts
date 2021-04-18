@@ -86,4 +86,40 @@ export class DocumentosService {
 
         return documento;
     }
+
+    public async editaDocumento(
+        usuario_id: string,
+        documento_id: string,
+        nome: string,
+        descricao: string,
+        assunto: string,
+    ): Promise<Documento> {
+        const consultaDocumento = await this.documentosRepository.encontra(
+            usuario_id,
+            documento_id
+        );
+
+        if (!consultaDocumento) {
+            console.log('Documento não encontrado!');
+            throw new Error('Documento não encontrado!');
+        }
+
+        if (nome) {
+            consultaDocumento.nome = nome;
+        }
+
+        if (descricao) {
+            consultaDocumento.descricao = descricao;
+        }
+
+        if (assunto) {
+            consultaDocumento.assunto = assunto;
+        }
+
+        const editaUsuario = await this.documentosRepository.salva(
+            consultaDocumento,
+        );
+
+        return editaUsuario;
+    }
 }

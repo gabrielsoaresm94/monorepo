@@ -62,15 +62,15 @@ export class UsuariosService {
     }
 
     public async listaUsuarios(
-        id: string,
+        usuario_id: string,
         email: string,
     ): Promise<Array<Usuario>> {
         let usuarios: Array<Usuario> = [];
         let usuario: Usuario;
 
-        if (id || email) {
-            if (id) {
-                usuario = await this.usuariosRepository.encontraPorId(id);
+        if (usuario_id || email) {
+            if (usuario_id) {
+                usuario = await this.usuariosRepository.encontraPorId(usuario_id);
                 if (usuario) {
                     usuarios.push(usuario);
                 }
@@ -92,13 +92,13 @@ export class UsuariosService {
     }
 
     public async editaUsuario(
-        chaveUsuario: string,
+        usuario_id: string,
         nome: string,
         email: string,
         papel: Role,
     ): Promise<Usuario> {
         const consultaUsuario = await this.usuariosRepository.encontraPorId(
-            chaveUsuario,
+            usuario_id,
         );
 
         if (!consultaUsuario) {
