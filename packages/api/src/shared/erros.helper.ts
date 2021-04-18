@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ApiProperty } from "@nestjs/swagger";
-import { HttpStatus } from "@nestjs/common";
+import { ApiProperty } from '@nestjs/swagger';
+import { HttpStatus } from '@nestjs/common';
 
 /**
  * Modelo de retorno de mensagens de funções auxiliares
@@ -45,7 +45,7 @@ export class MessageStatus {
         message: string,
         metadata?: any,
         erro?: string,
-        httpStatus?: number
+        httpStatus?: number,
     ) {
         this.metadata = metadata ? metadata : {};
         this.message = message;

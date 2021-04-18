@@ -25,12 +25,12 @@ criaServidorNest(app, AppModule, 3000, {
     titulo: 'Monorepo - API',
     base: 'api',
 })
-.then(async nestApp => {
-    /**
-     * Inicializa a aplicação nest
-     */
-    await nestApp.init();
+    .then(async nestApp => {
+        /**
+         * Inicializa a aplicação nest
+         */
+        await nestApp.init();
 
-    console.log('API iniciada.');
-})
-.catch(err => console.error('Problemas com API: ', err.message));
+        console.log('API iniciada.');
+    })
+    .catch(err => console.error('Problemas com API: ', err.message));

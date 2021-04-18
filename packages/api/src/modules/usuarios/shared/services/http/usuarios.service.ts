@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as _ from 'lodash';
 import { geraHash } from 'src/shared/functions/utils';
 import { Role } from 'src/shared/guards/ role.enum';
 import Usuario from '../../typeorm/entities/usuario.entity';
@@ -6,9 +7,7 @@ import { UsuariosRepository } from '../../typeorm/repositories/usuarios.reposito
 
 @Injectable()
 export class UsuariosService {
-    constructor(
-        private usuariosRepository: UsuariosRepository,
-    ) {}
+    constructor(private usuariosRepository: UsuariosRepository) {}
 
     public async criaUsuario(
         nome: string,
@@ -63,15 +62,15 @@ export class UsuariosService {
     }
 
     public async listaUsuarios(
-        id: string,
-        email: string
+        usuario_id: string,
+        email: string,
     ): Promise<Array<Usuario>> {
         let usuarios: Array<Usuario> = [];
         let usuario: Usuario;
 
-        if (id || email) {
-            if (id) {
-                usuario = await this.usuariosRepository.encontraPorId(id);
+        if (usuario_id || email) {
+            if (usuario_id) {
+                usuario = await this.usuariosRepository.encontraPorId(usuario_id);
                 if (usuario) {
                     usuarios.push(usuario);
                 }
@@ -86,16 +85,21 @@ export class UsuariosService {
         } else {
             usuarios = await this.usuariosRepository.listaUsuarios();
         }
-        return usuarios;
+
+        const usuariosSemDuplicatas = _.uniqBy(usuarios, 'usuario_id');
+
+        return usuariosSemDuplicatas;
     }
 
     public async editaUsuario(
-        chaveUsuario: string,
+        usuario_id: string,
         nome: string,
         email: string,
-        papel: Role
+        papel: Role,
     ): Promise<Usuario> {
-        const consultaUsuario = await this.usuariosRepository.encontraPorId(chaveUsuario);
+        const consultaUsuario = await this.usuariosRepository.encontraPorId(
+            usuario_id,
+        );
 
         if (!consultaUsuario) {
             console.log('Usuário não encontrado!');
@@ -107,7 +111,9 @@ export class UsuariosService {
         }
 
         if (email) {
-            const verificaEmail = await this.usuariosRepository.encontraPorEmail(email);
+            const verificaEmail = await this.usuariosRepository.encontraPorEmail(
+                email,
+            );
 
             if (verificaEmail) {
                 console.log('Email já está sendo usado!');
@@ -121,7 +127,9 @@ export class UsuariosService {
             consultaUsuario.papel = papel;
         }
 
-        const editaUsuario = await this.usuariosRepository.salva(consultaUsuario);
+        const editaUsuario = await this.usuariosRepository.salva(
+            consultaUsuario,
+        );
 
         return editaUsuario;
     }

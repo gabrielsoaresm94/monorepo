@@ -26,6 +26,7 @@ import { MessageStatus } from 'src/shared/erros.helper';
 import { Role } from 'src/shared/guards/ role.enum';
 import { Roles } from 'src/shared/guards/roles.decorator';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { RequisicaoListaUsuariosDTO } from './shared/dtos/req-get.dto';
 import { RequisicaoCriaUsuarioDTO } from './shared/dtos/req-post.dto';
 import { RequisicaoEditaUsuarioDTO } from './shared/dtos/req-put.dto';
 import { UsuariosService } from './shared/services/http/usuarios.service';
@@ -76,22 +77,22 @@ export class UsuariosController {
         },
     })
     async listaUsuarios(
-        @Query() dadosReqListaaUsuario,
-        @Res() res: Response
+        @Query() dadosReqListaUsuario: RequisicaoListaUsuariosDTO,
+        @Res() res: Response,
     ): Promise<Response> {
         try {
-            const {usuario, email} = dadosReqListaaUsuario;
+            const { usuario, email } = dadosReqListaUsuario;
 
             const usuarios = await this.usuariosService.listaUsuarios(
                 usuario,
-                email
+                email,
             );
 
             return res.status(HttpStatus.OK).json({
                 message:
                     '[INFO] {listaUsuarios} - Usuários listados com sucesso',
                 status: true,
-                metadata: usuarios
+                metadata: usuarios,
             });
         } catch (erro) {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -117,7 +118,8 @@ export class UsuariosController {
         description: '[ERRO] {GET - /usuarios/:usuario_id} - Acesso negado',
         schema: {
             example: {
-                message: '[ERRO] {GET - /usuarios/:usuario_id} - Usuário não tem permissão',
+                message:
+                    '[ERRO] {GET - /usuarios/:usuario_id} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -128,7 +130,8 @@ export class UsuariosController {
         description: '[ERRO] {GET - /usuarios/:usuario_id} - Erro do servidor',
         schema: {
             example: {
-                message: '[ERRO] {GET - /usuarios/:usuario_id} - Ocorreu um erro',
+                message:
+                    '[ERRO] {GET - /usuarios/:usuario_id} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
@@ -136,20 +139,25 @@ export class UsuariosController {
         },
     })
     async encontraUsuario(
-        @Param() chaveUsuario: string,
-        @Res() res: Response
-    ) {
+        @Param() chaveUsuario: { usuario_id: string },
+        @Res() res: Response,
+    ): Promise<Response> {
         try {
-            const consultaUsuario = await this.usuariosService.encontraUsuario(chaveUsuario);
+            const { usuario_id } = chaveUsuario;
+            const consultaUsuario = await this.usuariosService.encontraUsuario(
+                usuario_id,
+            );
 
             return res.status(HttpStatus.OK).json({
-                message: '[INFO] {encontraUsuario} - Usuário encontrado com sucesso.',
+                message:
+                    '[INFO] {encontraUsuario} - Usuário encontrado com sucesso.',
                 metedata: consultaUsuario,
                 status: true,
             });
         } catch (erro) {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                message: '[ERRO] {encontraUsuario} - Problemas para encontrar usuário.',
+                message:
+                    '[ERRO] {encontraUsuario} - Problemas para encontrar usuário.',
                 erro: erro.message,
                 status: false,
             });
@@ -170,7 +178,8 @@ export class UsuariosController {
         description: '[ERRO] {POST - /usuarios} - Acesso negado',
         schema: {
             example: {
-                message: '[ERRO] {POST - /usuarios} - Usuário não tem permissão',
+                message:
+                    '[ERRO] {POST - /usuarios} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -230,7 +239,8 @@ export class UsuariosController {
         description: '[ERRO] {PUT - /usuarios/:usuario_id} - Acesso negado',
         schema: {
             example: {
-                message: '[ERRO] {PUT - /usuarios/:usuario_id} - Usuário não tem permissão',
+                message:
+                    '[ERRO] {PUT - /usuarios/:usuario_id} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -241,7 +251,8 @@ export class UsuariosController {
         description: '[ERRO] {PUT - /usuarios/:usuario_id} - Erro do servidor',
         schema: {
             example: {
-                message: '[ERRO] {PUT - /usuarios/:usuario_id} - Ocorreu um erro',
+                message:
+                    '[ERRO] {PUT - /usuarios/:usuario_id} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
@@ -250,27 +261,29 @@ export class UsuariosController {
     })
     async editaUsuario(
         @Body() dadosReqUsuario: Partial<RequisicaoEditaUsuarioDTO>,
-        @Param() chaveUsuario: string,
-        @Res() res: Response
-    ) {
+        @Param() chaveUsuario: { usuario_id: string },
+        @Res() res: Response,
+    ): Promise<Response> {
         try {
-            let {nome, email, papel} = dadosReqUsuario;
+            const { usuario_id } = chaveUsuario;
+            const { nome, email, papel } = dadosReqUsuario;
 
-            const editaUsuario = await this.usuariosService.editaUsuario(
-                chaveUsuario,
+            const usuarioEditado = await this.usuariosService.editaUsuario(
+                usuario_id,
                 nome,
                 email,
-                papel
+                papel,
             );
 
             return res.status(HttpStatus.OK).json({
                 message: '[INFO] {editaUsuario} - Usuário editado com sucesso.',
-                metedata: editaUsuario,
+                metedata: usuarioEditado,
                 status: true,
             });
         } catch (erro) {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                message: '[ERRO] {editaUsuario} - Problemas para editar usuário.',
+                message:
+                    '[ERRO] {editaUsuario} - Problemas para editar usuário.',
                 erro: erro.message,
                 status: false,
             });
@@ -291,7 +304,8 @@ export class UsuariosController {
         description: '[ERRO] {DELETE - /usuarios/:usuario_id} - Acesso negado',
         schema: {
             example: {
-                message: '[ERRO] {DELETE - /usuarios/:usuario_id} - Usuário não tem permissão',
+                message:
+                    '[ERRO] {DELETE - /usuarios/:usuario_id} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -299,10 +313,12 @@ export class UsuariosController {
         },
     })
     @ApiInternalServerErrorResponse({
-        description: '[ERRO] {DELETE - /usuarios/:usuario_id} - Erro do servidor',
+        description:
+            '[ERRO] {DELETE - /usuarios/:usuario_id} - Erro do servidor',
         schema: {
             example: {
-                message: '[ERRO] {DELETE - /usuarios/:usuario_id} - Ocorreu um erro',
+                message:
+                    '[ERRO] {DELETE - /usuarios/:usuario_id} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
@@ -310,20 +326,23 @@ export class UsuariosController {
         },
     })
     async removeUsuario(
-        @Param() chaveUsuario: string,
-        @Res() res: Response
-    ) {
+        @Param() chaveUsuario: { usuario_id: string },
+        @Res() res: Response,
+    ): Promise<Response> {
         try {
+            const { usuario_id } = chaveUsuario;
             // const removeUsuario = await this.usuariosService.removeUsuario(chaveUsuario);
 
             return res.status(HttpStatus.OK).json({
-                message: '[INFO] {removeUsuario} - Usuário removido com sucesso.',
+                message:
+                    '[INFO] {removeUsuario} - Usuário removido com sucesso.',
                 // metedata: removeUsuario,
                 status: true,
             });
         } catch (erro) {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                message: '[ERRO] {removeUsuario} - Problemas para remover usuário.',
+                message:
+                    '[ERRO] {removeUsuario} - Problemas para remover usuário.',
                 erro: erro.message,
                 status: false,
             });
