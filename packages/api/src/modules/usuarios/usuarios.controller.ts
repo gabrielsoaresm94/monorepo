@@ -357,7 +357,7 @@ export class UsuariosController {
      */
     @HttpCode(200)
     @Get('perfil')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseGuards(AuthGuard('jwt'))
     async perfil(
         @RequestUser() usuario_id: string,
         @Res() res: Response,
@@ -384,7 +384,7 @@ export class UsuariosController {
 
     @HttpCode(200)
     @Put('perfil')
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @UseGuards(AuthGuard('jwt'))
     async editarPerfil(
         @Body() dadosReqUsuario: Partial<RequisicaoEditaUsuarioDTO>,
         @RequestUser() usuario_id: string,
