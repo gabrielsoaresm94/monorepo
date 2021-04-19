@@ -9,7 +9,7 @@ TODO
 
 ## Todo list
 - [ ] - Tratar imagens que não sejam de texto
-- [ ] - Trartar imagem para retornar um texto mais apurado
+- [ ] - Tratar imagem para retornar um texto mais apurado
 - [x] - Remover quebras de linha e espaços indesejados
 - [ ] - Verificar tamanho máximo de variaveis e arquivos gerados
 - [x] - Pesquisar uma maneira do Docker ouvir a pasta copiada
