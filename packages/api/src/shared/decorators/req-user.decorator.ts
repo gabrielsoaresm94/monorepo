@@ -22,8 +22,6 @@ export const RequestUser = createParamDecorator(
 
         const decoded = verify(token, process.env.TOKEN_SEGREDO);
 
-        console.log(decoded, 1);
-
         const { id } = decoded as TokenPayload;
 
         return id;

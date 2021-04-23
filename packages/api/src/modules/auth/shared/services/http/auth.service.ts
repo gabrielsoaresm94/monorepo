@@ -30,8 +30,8 @@ export class AuthService {
         email: string;
         papel: string;
     }) {
-        console.log(process.env.TOKEN_TEMPO_EXP);
-        console.log(process.env.TOKEN_SEGREDO);
+        // console.log(process.env.TOKEN_TEMPO_EXP);
+        // console.log(process.env.TOKEN_SEGREDO);
 
         const expiresIn = Number(process.env.TOKEN_TEMPO_EXP);
         const accessToken = jwt.sign(
@@ -50,11 +50,12 @@ export class AuthService {
     }
 
     async validaUsuarioToken(payload: {
-        usuario_id: string;
+        id: string;
         email: string;
         nome: string;
     }): Promise<Usuario> {
-        return await this.usuariosService.encontraUsuario(payload.usuario_id);
+        const usuario = await this.usuariosService.encontraUsuario(payload.id);
+        return usuario;
     }
 
     async validaUsuario(

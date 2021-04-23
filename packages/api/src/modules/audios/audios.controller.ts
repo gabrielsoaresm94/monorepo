@@ -5,6 +5,7 @@ import {
     Get,
     HttpCode,
     HttpStatus,
+    Param,
     Query,
     Res,
     UseGuards,
@@ -12,8 +13,10 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { AudiosService } from './shared/services/http/audios.service';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller()
+@ApiTags('Audios')
+@Controller('audios')
 export class AudiosController {
     getStat;
     constructor(private readonly audiosService: AudiosService) {
@@ -33,13 +36,15 @@ export class AudiosController {
     // removeAudio();
 
     @HttpCode(200)
-    @Get('download')
+    @Get(':audio_id[\:]download')
     @UseGuards(AuthGuard('jwt'))
     async download(
+        @Param() chaveAudio: { audio_id: string },
         @Query() dadosReqDownload,
         @Res() res: Response,
     ): Promise<Response | void> {
         try {
+            const { audio_id } = chaveAudio;
             const { nome } = dadosReqDownload;
 
             const arquivo = `../../shared/audios/${nome}`;
@@ -56,14 +61,16 @@ export class AudiosController {
     }
 
     @HttpCode(200)
-    @Get('play')
+    @Get(':audio_id[\:]play')
     @UseGuards(AuthGuard('jwt'))
     async play(
+        @Param() chaveAudio: { audio_id: string },
         @Query() dadosReqDownload,
         @Res() res: Response,
     ): Promise<Response | void> {
         try {
             // const buffer = 2;
+            const { audio_id } = chaveAudio;
             const { nome } = dadosReqDownload;
             const arquivo = `../../shared/audios/${nome}`;
 
