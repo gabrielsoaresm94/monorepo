@@ -7,9 +7,11 @@ import {
     ManyToOne,
     JoinColumn,
     OneToMany,
+    OneToOne,
 } from 'typeorm';
 import Pagina from './pagina.entity';
 import Usuario from 'src/modules/usuarios/shared/typeorm/entities/usuario.entity';
+import Audio from 'src/modules/audios/shared/typeorm/entities/audio.entity';
 
 @Entity('documentos')
 class Documento {
@@ -49,6 +51,13 @@ class Documento {
     )
     @JoinColumn({ name: 'usuario_id' })
     usuario: Usuario;
+
+    @Column()
+    audio_id: string;
+
+    @OneToOne(() => Audio)
+    @JoinColumn({ name: 'audio_id' })
+    audio: Audio;
 }
 
 export default Documento;

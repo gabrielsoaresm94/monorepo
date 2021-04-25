@@ -123,7 +123,7 @@ export class AuthController {
         } catch (erro) {
             return res.status(HttpStatus.BAD_REQUEST).json({
                 message: '[ERRO] {login} - Problemas para logar na aplicação.',
-                erro: erro.error,
+                erro: erro.message,
                 status: false,
             });
         }

@@ -13,7 +13,23 @@ import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
 import { PathItemObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { minutosToMs } from './shared/functions/utils';
+import { ExpressAdapter } from '@nestjs/platform-express';
 
+/**
+ * Define execução
+ */
+const executandoLocalmente = true;
+
+/**
+ * Constantes ativação de Log
+ */
+const DESATIVAR_LOG_NEST = false;
+const ATIVAR_LOG_NEST = true;
+
+/**
+ * Define porta
+ */
+const porta = 3000;
 
 /**
  * Cria instância do servidor express
@@ -47,7 +63,7 @@ const init = {
  * Middleware para controle de ataque de negação de serviço através de múltiplas requisições
  * @param expressInstance
  */
- export const adicionaMiddlewareRateLimit = (
+export const adicionaMiddlewareRateLimit = (
     expressInstance: express.Express,
 ): void => {
     const reqLimits = {
@@ -101,7 +117,7 @@ export const adicionaMiddlewareHelmet = (
  * Remove '[:]' das urls e troca por ':' para execução da documentação da API
  * @param document
  */
- export const removeCaracteresEspeciaisNoPath = (
+export const removeCaracteresEspeciaisNoPath = (
     document: OpenAPIObject,
 ): void => {
     const newPaths: Record<string, PathItemObject> = {};
@@ -120,7 +136,7 @@ export const adicionaMiddlewareHelmet = (
  * Adiciona a documentação Live do OpenAPI
  * @param app Aplicação nest a ser buscada
  */
- export const adicionaOpenAPIDocs = (
+export const adicionaOpenAPIDocs = (
     app: INestApplication,
     info, //: InfoDocs,
     port,
@@ -149,7 +165,6 @@ export const adicionaMiddlewareHelmet = (
     });
 };
 
-
 async function bootstrap() {
     // Importa o helmet para proteger vulnerabilidades conhecidas do HTTP
     adicionaMiddlewareHelmet(expressInstance);
@@ -160,10 +175,16 @@ async function bootstrap() {
     // Adiciona o rate limit para um controle mais preciso da segurança da API
     adicionaMiddlewareRateLimit(expressInstance);
 
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(
+        AppModule,
+        // new ExpressAdapter(expressInstance),
+        // {
+        //     logger: executandoLocalmente ? ATIVAR_LOG_NEST : DESATIVAR_LOG_NEST,
+        // },
+    );
 
-    adicionaOpenAPIDocs(app, infoOpenApi, 3000)
+    adicionaOpenAPIDocs(app, infoOpenApi, porta);
 
-    await app.listen(3000);
+    await app.listen(porta);
 }
 bootstrap();
