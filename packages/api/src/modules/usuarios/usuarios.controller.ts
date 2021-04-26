@@ -43,10 +43,6 @@ export class UsuariosController {
      */
     @HttpCode(200)
     @Get('usuarios')
-    // @UseGuards(
-    //   AuthGuard,
-    //   RolesGuard
-    // )
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -331,7 +327,7 @@ export class UsuariosController {
         @Res() res: Response,
     ): Promise<Response> {
         try {
-            const { usuario_id } = chaveUsuario;
+            // const { usuario_id } = chaveUsuario;
             // const removeUsuario = await this.usuariosService.removeUsuario(chaveUsuario);
 
             return res.status(HttpStatus.OK).json({
@@ -358,6 +354,37 @@ export class UsuariosController {
     @HttpCode(200)
     @Get('perfil')
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Encontra perfil do usuário' })
+    @ApiOkResponse({
+        description: 'Perfil encontrado com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {GET - /perfil} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {GET - /perfil} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description:
+            '[ERRO] {GET - /perfil} - Erro do servidor',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {GET - /perfil} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     async perfil(
         @RequestUser() usuario_id: string,
         @Res() res: Response,
@@ -385,6 +412,37 @@ export class UsuariosController {
     @HttpCode(200)
     @Put('perfil')
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Edita perfil do usuário' })
+    @ApiOkResponse({
+        description: 'Perfil editado com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {PUT - /perfil} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {PUT - /perfil} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description:
+            '[ERRO] {PUT - /perfil} - Erro do servidor',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {PUT - /perfil} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     async editarPerfil(
         @Body() dadosReqUsuario: Partial<RequisicaoEditaUsuarioDTO>,
         @RequestUser() usuario_id: string,

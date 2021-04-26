@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository, Not, EntityRepository } from 'typeorm';
+import { Repository, EntityRepository } from 'typeorm';
 import { RequisicaoCriaUsuarioDTO } from '../../dtos/req-post.dto';
 import Usuario from '../entities/usuario.entity';
 

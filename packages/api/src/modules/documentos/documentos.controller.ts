@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import {
     Body,
     Controller,
@@ -10,16 +9,12 @@ import {
     Put,
     Query,
     Res,
-    UploadedFile,
     UploadedFiles,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import {
-    FileInterceptor,
-    FilesInterceptor,
-} from '@nestjs/platform-express/multer';
+import { FilesInterceptor } from '@nestjs/platform-express/multer';
 import { ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { editFileName, imageFileFilter } from 'src/shared/functions/utils';
@@ -60,7 +55,7 @@ export class DocumentosController {
                 documento_id,
                 nome,
                 descricao,
-                assunto
+                assunto,
             );
 
             return res.status(HttpStatus.OK).json({
@@ -93,7 +88,7 @@ export class DocumentosController {
 
             const documentos = await this.documentosService.listaDocumentos(
                 usuario_id,
-                assunto
+                assunto,
             );
 
             return res.status(HttpStatus.OK).json({
@@ -144,6 +139,8 @@ export class DocumentosController {
         }
     }
 
+    // (method) multer.DiskStorageOptions.filename?(req: e.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>, file: Express.Multer.File, callback: (error: Error, filename: string) => void): void
+
     @HttpCode(201)
     @Post()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -159,7 +156,17 @@ export class DocumentosController {
     )
     async criaDocumento(
         @Query() dadosReqCriaDocumento: RequisicaoCriaDocumentoDTO,
-        @UploadedFiles() paginas,
+        @UploadedFiles()
+        paginas: Array<{
+            fieldname: string; // image
+            originalname: string;
+            encoding: string;
+            mimetype: string; // image/png
+            destination: string;
+            filename: string;
+            path: string;
+            size: number;
+        }>,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
     ): Promise<Response> {
@@ -170,6 +177,7 @@ export class DocumentosController {
              * Adiciona propriedades das imagens enviadas,
              * no vetor
              */
+
             const imagens = [];
             paginas.forEach(file => {
                 const fileReponse = {

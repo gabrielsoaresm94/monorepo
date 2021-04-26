@@ -12,24 +12,17 @@ import { AppModule } from './modules/app.module';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
 import { PathItemObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-import { minutosToMs } from './shared/functions/utils';
+// import { minutosToMs } from './shared/functions/utils';
 import { ExpressAdapter } from '@nestjs/platform-express';
+// import rateLimit from 'express-rate-limit';
 
 /**
- * Define execução
+ * Constantes
  */
-const executandoLocalmente = true;
-
-/**
- * Constantes ativação de Log
- */
-const DESATIVAR_LOG_NEST = false;
-const ATIVAR_LOG_NEST = true;
-
-/**
- * Define porta
- */
-const porta = 3000;
+const PORTA = 3000;
+const EXECULTA_LOCAL = true;
+const DESATIVA_LOG = false;
+const ATIVA_LOG = true;
 
 /**
  * Cria instância do servidor express
@@ -45,19 +38,19 @@ const infoOpenApi = {
     descricao: 'API do monorepo.',
 };
 
-const init = {
-    reqLimits: {
-        minutos: 10,
-        max: 50,
-    },
-    cors: {
-        origens: '*',
-        // [
-        // 	'http://localhost:4201',
-        // 	'http://localhost:4200',
-        // ]
-    },
-};
+// const init = {
+//     reqLimits: {
+//         minutos: 10,
+//         max: 50,
+//     },
+//     cors: {
+//         origens: '*',
+//         // [
+//         // 	'http://localhost:4201',
+//         // 	'http://localhost:4200',
+//         // ]
+//     },
+// };
 
 /**
  * Middleware para controle de ataque de negação de serviço através de múltiplas requisições
@@ -66,20 +59,19 @@ const init = {
 export const adicionaMiddlewareRateLimit = (
     expressInstance: express.Express,
 ): void => {
-    const reqLimits = {
-        /**
-         * Define a janela de tempo em ms para cada evento de limite
-         */
-        windowMs: minutosToMs(init.reqLimits.minutos),
+    // const reqLimits = {
+    //     /**
+    //      * Define a janela de tempo em ms para cada evento de limite
+    //      */
+    //     windowMs: minutosToMs(init.reqLimits.minutos),
 
-        /**
-         * Limita cada IP a úm certo número de requisições
-         */
-        max: init.reqLimits.max,
-    };
+    //     /**
+    //      * Limita cada IP a úm certo número de requisições
+    //      */
+    //     max: init.reqLimits.max,
+    // } as rateLimit.Options;
 
-    // TODO
-    // expressInstance.use(new rateLimit(reqLimits));
+    // expressInstance.use(rateLimit(reqLimits));
     expressInstance.set('trust proxy', 1);
 };
 
@@ -138,12 +130,19 @@ export const removeCaracteresEspeciaisNoPath = (
  */
 export const adicionaOpenAPIDocs = (
     app: INestApplication,
-    info, //: InfoDocs,
-    port,
+    info: {
+        contato: {
+            nome: string;
+            site: string;
+            email: string;
+        };
+        descricao: string;
+    },
+    port: number,
 ): void => {
     // Configura o documento
     const options = new DocumentBuilder()
-        .setTitle(info.titulo)
+        // .setTitle(info.titulo)
         .addServer(`http://localhost:${port}`, 'Servidor de desenvolvimento')
         .setContact(info.contato.nome, info.contato.site, info.contato.email)
         .setDescription(info.descricao)
@@ -177,14 +176,14 @@ async function bootstrap() {
 
     const app = await NestFactory.create(
         AppModule,
-        // new ExpressAdapter(expressInstance),
-        // {
-        //     logger: executandoLocalmente ? ATIVAR_LOG_NEST : DESATIVAR_LOG_NEST,
-        // },
+        new ExpressAdapter(expressInstance),
+        {
+            logger: EXECULTA_LOCAL ? ATIVA_LOG : DESATIVA_LOG,
+        },
     );
 
-    adicionaOpenAPIDocs(app, infoOpenApi, porta);
+    adicionaOpenAPIDocs(app, infoOpenApi, PORTA);
 
-    await app.listen(porta);
+    await app.listen(PORTA);
 }
 bootstrap();

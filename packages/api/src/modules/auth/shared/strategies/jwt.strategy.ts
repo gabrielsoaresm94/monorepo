@@ -1,9 +1,8 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Request } from 'express';
-import { use } from 'passport';
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthService } from '../services/http/auth.service';
+import Usuario from 'src/modules/usuarios/shared/typeorm/entities/usuario.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -11,22 +10,28 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: 'Codebrains',
+            secretOrKey: process.env.TOKEN_SEGREDO,
         });
     }
 
-    async validate(payload: any, done: Function) {
+    async validate(
+        payload: {
+            id: string;
+            email: string;
+            nome: string;
+            iat: number;
+            exp: number;
+        },
+        done: (error: Error, usuario: Usuario) => void,
+    ): Promise<void> {
         const usuario = await this.authService.validaUsuarioToken(payload);
         if (!usuario) {
-            console.log(
-                'Sem aautorização, para acessar rota efetue o login.',
-            );
+            console.log('Sem autorização, para acessar rota efetue o login.');
             throw new HttpException(
                 {
-                    message: 'Sem aautorização.',
+                    message: 'Sem autorização.',
                     status: false,
-                    error:
-                        'Sem aautorização, para acessar rota efetue o login.',
+                    error: 'Sem autorização, para acessar rota efetue o login.',
                 },
                 HttpStatus.UNAUTHORIZED,
             );

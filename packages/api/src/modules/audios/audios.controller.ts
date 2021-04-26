@@ -6,7 +6,7 @@ import {
     Get,
     HttpCode,
     HttpStatus,
-    Param,
+    // Param,
     Post,
     Query,
     Res,
@@ -19,8 +19,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { RequestUser } from 'src/shared/decorators/req-user.decorator';
 import { DocumentosService } from '../documentos/shared/services/http/documentos.service';
 import { HttpService } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators'; // This is where I import map operator
+import { map } from 'rxjs/operators';
 
 @ApiTags('Audios')
 @Controller('audios')
@@ -50,10 +49,10 @@ export class AudiosController {
     @Post()
     @UseGuards(AuthGuard('jwt'))
     async criaAudio(
-        @Body() dadosReqCriaAudio,
+        @Body() dadosReqCriaAudio: {documento_id: string},
         @RequestUser() usuario_id: string,
         @Res() res: Response,
-    ) {
+    ): Promise<Response> {
         try {
             const { documento_id } = dadosReqCriaAudio;
             const documento = await this.documentosService.encontraDocumento(
@@ -160,12 +159,12 @@ export class AudiosController {
     @Get(':audio_id[:]download')
     @UseGuards(AuthGuard('jwt'))
     async download(
-        @Param() chaveAudio: { audio_id: string },
-        @Query() dadosReqDownload,
+        // @Param() chaveAudio: { audio_id: string },
+        @Query() dadosReqDownload: { nome: string },
         @Res() res: Response,
     ): Promise<Response | void> {
         try {
-            const { audio_id } = chaveAudio;
+            // const { audio_id } = chaveAudio;
             const { nome } = dadosReqDownload;
 
             const arquivo = `../../shared/audios/${nome}`;
@@ -185,13 +184,13 @@ export class AudiosController {
     @Get(':audio_id[:]play')
     @UseGuards(AuthGuard('jwt'))
     async play(
-        @Param() chaveAudio: { audio_id: string },
-        @Query() dadosReqDownload,
+        // @Param() chaveAudio: { audio_id: string },
+        @Query() dadosReqDownload: { nome: string },
         @Res() res: Response,
     ): Promise<Response | void> {
         try {
             // const buffer = 2;
-            const { audio_id } = chaveAudio;
+            // const { audio_id } = chaveAudio;
             const { nome } = dadosReqDownload;
             const arquivo = `../../shared/audios/${nome}`;
 

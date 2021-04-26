@@ -1,6 +1,5 @@
 import * as jwt from 'jsonwebtoken';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { debug } from 'console';
 import { comparaHash } from 'src/shared/functions/utils';
 import { Role } from 'src/shared/guards/ role.enum';
 import { UsuariosService } from 'src/modules/usuarios/shared/services/http/usuarios.service';
@@ -29,10 +28,10 @@ export class AuthService {
         nome: string;
         email: string;
         papel: string;
-    }) {
-        // console.log(process.env.TOKEN_TEMPO_EXP);
-        // console.log(process.env.TOKEN_SEGREDO);
-
+    }): {
+        expiresIn: number,
+        accessToken: string,
+    } {
         const expiresIn = Number(process.env.TOKEN_TEMPO_EXP);
         const accessToken = jwt.sign(
             {
@@ -44,8 +43,8 @@ export class AuthService {
             { expiresIn },
         );
         return {
-            expiresIn,
-            accessToken,
+            expiresIn: expiresIn,
+            accessToken: accessToken,
         };
     }
 
