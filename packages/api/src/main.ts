@@ -30,6 +30,7 @@ const ATIVA_LOG = true;
 const expressInstance = express();
 
 const infoOpenApi = {
+    titulo: 'Monorepo',
     contato: {
         nome: 'Monorepo',
         site: 'exemplo.dev',
@@ -131,6 +132,7 @@ export const removeCaracteresEspeciaisNoPath = (
 export const adicionaOpenAPIDocs = (
     app: INestApplication,
     info: {
+        titulo: string,
         contato: {
             nome: string;
             site: string;
@@ -142,7 +144,7 @@ export const adicionaOpenAPIDocs = (
 ): void => {
     // Configura o documento
     const options = new DocumentBuilder()
-        // .setTitle(info.titulo)
+        .setTitle(info.titulo)
         .addServer(`http://localhost:${port}`, 'Servidor de desenvolvimento')
         .setContact(info.contato.nome, info.contato.site, info.contato.email)
         .setDescription(info.descricao)

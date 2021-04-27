@@ -8,7 +8,6 @@ import {
     HttpCode,
 } from '@nestjs/common';
 import {
-    ApiForbiddenResponse,
     ApiInternalServerErrorResponse,
     ApiOkResponse,
     ApiOperation,
@@ -77,17 +76,6 @@ export class AuthController {
     @ApiOkResponse({
         description: 'Sessão iniciada com sucesso',
         type: MessageStatus,
-    })
-    @ApiForbiddenResponse({
-        description: '[ERRO] {POST - /login} - Acesso negado',
-        schema: {
-            example: {
-                message: '[ERRO] {POST - /login} - Usuário não tem permissão',
-                status: false,
-                erro: 'Usuário não tem permissão',
-            },
-            type: 'MessageStatus',
-        },
     })
     @ApiInternalServerErrorResponse({
         description: '[ERRO] {POST - /login} - Erro do servidor',

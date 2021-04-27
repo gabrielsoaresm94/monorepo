@@ -7,7 +7,7 @@ import { AudiosRepository } from '../../typeorm/repositories/audios.repository';
 export class AudiosService {
     constructor(
         private documentosRepository: DocumentosRepository,
-        private audiosRepository: AudiosRepository
+        private audiosRepository: AudiosRepository,
     ) {}
 
     public async criaAudio(
@@ -31,12 +31,34 @@ export class AudiosService {
             tamanho,
             formato,
             documento.assunto,
-            documento.descricao
+            documento.descricao,
         );
 
         documento.audio_id = audio.audio_id;
         await this.documentosRepository.salva(documento);
 
         return audio;
+    }
+
+    public async encontraAudio(
+        usuario_id: string,
+        audio_id: string,
+    ): Promise<Audio> {
+        const audio = await this.audiosRepository.encontra(
+            usuario_id,
+            audio_id,
+        );
+
+        return audio;
+    }
+
+    public async listaAudios(
+        usuario_id: string,
+    ): Promise<Array<Audio>> {
+        const audios = await this.audiosRepository.lista(
+            usuario_id,
+        );
+
+        return audios;
     }
 }

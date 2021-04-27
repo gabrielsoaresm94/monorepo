@@ -112,11 +112,11 @@ export class UsuariosController {
         type: MessageStatus,
     })
     @ApiForbiddenResponse({
-        description: '[ERRO] {GET - /usuarios/:usuario_id} - Acesso negado',
+        description: '[ERRO] {GET - /usuarios/{usuario_id}} - Acesso negado',
         schema: {
             example: {
                 message:
-                    '[ERRO] {GET - /usuarios/:usuario_id} - Usuário não tem permissão',
+                    '[ERRO] {GET - /usuarios/{usuario_id}} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -124,11 +124,11 @@ export class UsuariosController {
         },
     })
     @ApiInternalServerErrorResponse({
-        description: '[ERRO] {GET - /usuarios/:usuario_id} - Erro do servidor',
+        description: '[ERRO] {GET - /usuarios/{usuario_id}} - Erro do servidor',
         schema: {
             example: {
                 message:
-                    '[ERRO] {GET - /usuarios/:usuario_id} - Ocorreu um erro',
+                    '[ERRO] {GET - /usuarios/{usuario_id}} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
@@ -233,11 +233,11 @@ export class UsuariosController {
         type: MessageStatus,
     })
     @ApiForbiddenResponse({
-        description: '[ERRO] {PUT - /usuarios/:usuario_id} - Acesso negado',
+        description: '[ERRO] {PUT - /usuarios/{usuario_id}} - Acesso negado',
         schema: {
             example: {
                 message:
-                    '[ERRO] {PUT - /usuarios/:usuario_id} - Usuário não tem permissão',
+                    '[ERRO] {PUT - /usuarios/{usuario_id}} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -245,11 +245,11 @@ export class UsuariosController {
         },
     })
     @ApiInternalServerErrorResponse({
-        description: '[ERRO] {PUT - /usuarios/:usuario_id} - Erro do servidor',
+        description: '[ERRO] {PUT - /usuarios/{usuario_id}} - Erro do servidor',
         schema: {
             example: {
                 message:
-                    '[ERRO] {PUT - /usuarios/:usuario_id} - Ocorreu um erro',
+                    '[ERRO] {PUT - /usuarios/{usuario_id}} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
@@ -298,11 +298,11 @@ export class UsuariosController {
         type: MessageStatus,
     })
     @ApiForbiddenResponse({
-        description: '[ERRO] {DELETE - /usuarios/:usuario_id} - Acesso negado',
+        description: '[ERRO] {DELETE - /usuarios/{usuario_id}} - Acesso negado',
         schema: {
             example: {
                 message:
-                    '[ERRO] {DELETE - /usuarios/:usuario_id} - Usuário não tem permissão',
+                    '[ERRO] {DELETE - /usuarios/{usuario_id}} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -311,11 +311,11 @@ export class UsuariosController {
     })
     @ApiInternalServerErrorResponse({
         description:
-            '[ERRO] {DELETE - /usuarios/:usuario_id} - Erro do servidor',
+            '[ERRO] {DELETE - /usuarios/{usuario_id}} - Erro do servidor',
         schema: {
             example: {
                 message:
-                    '[ERRO] {DELETE - /usuarios/:usuario_id} - Ocorreu um erro',
+                    '[ERRO] {DELETE - /usuarios/{usuario_id}} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },

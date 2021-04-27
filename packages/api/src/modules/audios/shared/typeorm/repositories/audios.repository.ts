@@ -20,7 +20,7 @@ export class AudiosRepository {
         tamanho: string,
         formato: string,
         assunto: string,
-        descricao: string
+        descricao: string,
     ): Promise<Audio> {
         const audio = this.ormRepository.create({
             nome: nome,
@@ -28,7 +28,7 @@ export class AudiosRepository {
             formato: formato,
             assunto: assunto,
             descricao: descricao,
-            usuario_id: usuario_id
+            usuario_id: usuario_id,
         });
 
         await this.ormRepository.save(audio);
@@ -38,5 +38,26 @@ export class AudiosRepository {
 
     public async salva(audio: Audio): Promise<Audio> {
         return await this.ormRepository.save(audio);
+    }
+
+    public async encontra(
+        usuario_id: string,
+        audio_id: string,
+    ): Promise<Audio> {
+        const audio = await this.ormRepository.find({
+            where: [{ usuario_id: usuario_id, documento_id: audio_id }],
+        });
+
+        const audioEncontrado = audio[0];
+
+        return audioEncontrado;
+    }
+
+    public async lista(usuario_id: string): Promise<Array<Audio>> {
+        const audios = await this.ormRepository.find({
+            where: [{ usuario_id: usuario_id }],
+        });
+
+        return audios;
     }
 }

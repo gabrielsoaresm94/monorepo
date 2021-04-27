@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express/multer';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { editFileName, imageFileFilter } from 'src/shared/functions/utils';
 import { DocumentosService } from './shared/services/http/documentos.service';
@@ -26,6 +26,7 @@ import { Roles } from 'src/shared/guards/roles.decorator';
 import { Role } from 'src/shared/guards/ role.enum';
 import { RequisicaoCriaDocumentoDTO } from './shared/dtos/req-post.dto';
 import { RequisicaoListaDocumentosDTO } from './shared/dtos/req-get.dto';
+import { MessageStatus } from 'src/shared/erros.helper';
 
 @ApiTags('Documentos')
 @Controller('documentos')
@@ -36,10 +37,42 @@ export class DocumentosController {
      */
     // removeDocumento();
 
+    /**
+     * TODO - Caso o documento contenha um áudio criado, editá-lo tbm.
+     */
     @HttpCode(200)
     @Put(':documento_id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN, Role.USUARIO)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Edita documento do usuário' })
+    @ApiOkResponse({
+        description: 'Documento editado com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {PUT - /documentos/{documento_id}} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {PUT - /documentos/{documento_id}} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {PUT - /documentos/{documento_id}} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {PUT - /documentos/{documento_id}} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     async editaDocumento(
         @Param() chaveDocumento: { documento_id: string },
         @RequestUser() usuario_id: string,
@@ -78,6 +111,35 @@ export class DocumentosController {
     @Get()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN, Role.USUARIO)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Lista documentos do usuário' })
+    @ApiOkResponse({
+        description: 'Documentos listados com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {GET - /documentos} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {GET - /documentos} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {GET - /documentos} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {GET - /documentos} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     async listaDocumentos(
         @Query() dadosReqListaDocumentos: RequisicaoListaDocumentosDTO,
         @RequestUser() usuario_id: string,
@@ -111,6 +173,35 @@ export class DocumentosController {
     @Get(':documento_id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN, Role.USUARIO)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Encontra documento do usuário' })
+    @ApiOkResponse({
+        description: 'Documento encontrado com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {GET - /documentos/{documento_id}} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {GET - /documentos/{documento_id}} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {GET - /documentos/{documento_id}} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {GET - /documentos/{documento_id}} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     async encontraDocumento(
         @Param() chaveDocumento: { documento_id: string },
         @RequestUser() usuario_id: string,
@@ -145,6 +236,35 @@ export class DocumentosController {
     @Post()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN, Role.USUARIO)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Cria documento' })
+    @ApiOkResponse({
+        description: 'Documento criado com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {POST - /documentos} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {POST - /documentos} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {POST - /documentos} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {POST - /documentos} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
     @UseInterceptors(
         FilesInterceptor('image', 10, {
             storage: diskStorage({
