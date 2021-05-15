@@ -1,11 +1,6 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import {
-    Injectable,
-    Logger,
-    HttpException,
-    HttpStatus,
-} from '@nestjs/common';
+import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthService } from '../services/http/auth.service';
 
 @Injectable()
@@ -21,7 +16,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
     async validate(email: string, senha: string): Promise<any> {
         const user = await this.authService.validaUsuario(email, senha);
-        this.logger.log(user);
         if (!user) {
             console.log(
                 'Erro ao efetuar login, por favor verifica email ou senha.',

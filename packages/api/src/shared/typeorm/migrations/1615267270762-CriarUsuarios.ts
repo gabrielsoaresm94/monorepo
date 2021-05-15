@@ -33,7 +33,6 @@ export class CriarUsuarios1615267270762 implements MigrationInterface {
                         name: 'papel',
                         type: 'varchar',
                         isNullable: false,
-                        // isUnique: true - TODO remover UniqueKey da coluna.
                     },
                     {
                         name: 'created_at',

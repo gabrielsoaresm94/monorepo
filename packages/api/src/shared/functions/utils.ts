@@ -1,21 +1,6 @@
-import * as fs from 'fs';
 import { extname } from 'path';
 import { hash, compare } from 'bcryptjs';
-
-/**
- * Converte segundos para milisegundos.
- *
- * @param segundos Quantidade de segundos a ser convertida
- */
-export const segundosToMs = (segundos: number): number => segundos * 1000;
-
-/**
- * Converte a quantidade de minutos para milisegundos.
- *
- * @param minutos Quantidade em minutos a ser convertitda
- */
-export const minutosToMs = (minutos: number): number =>
-    minutos * segundosToMs(60);
+import { Request } from 'express';
 
 /**
  * Gera hash para criação de usuário.
@@ -50,7 +35,11 @@ export const comparaHash = (
  * @param callback
  * @returns
  */
-export const imageFileFilter = (req, file, callback) => {
+export const imageFileFilter = (
+    req: Request,
+    file: Express.Multer.File,
+    callback: (error: Error, acceptFile: boolean) => void,
+): void => {
     if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
         return callback(new Error('Only image files are allowed!'), false);
     }
@@ -64,13 +53,11 @@ export const imageFileFilter = (req, file, callback) => {
  * @param file
  * @param callback
  */
-export const editFileName = (req, file, callback) => {
-    // const stats = fs.statSync(file.originalname)
-    // const fileSizeInBytes = stats.size;
-    // // Convert the file size to megabytes (optional)
-    // const fileSizeInMegabytes = fileSizeInBytes / (1024*1024);
-    // file.size = fileSizeInMegabytes;
-
+export const editFileName = (
+    req: Request,
+    file: Express.Multer.File,
+    callback: (error: Error, filename: string) => void,
+): void => {
     const name = file.originalname.split('.')[0];
     const fileExtName = extname(file.originalname);
     const randomName = Array(4)

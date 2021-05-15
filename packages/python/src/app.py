@@ -9,9 +9,8 @@ def hello_world():
         "nome": "Hello, World!"
     }
 
-# TODO - Adicionar "./shared" aos caminhos
 @app.route('/audios',  methods=['POST'])
-def retornaAudio():
+def criaAudio():
     if (request.is_json):
         print (request.is_json)
         body = request.get_json(force=True)
@@ -19,19 +18,28 @@ def retornaAudio():
         nome = body.get("nome")
         caminhos = body.get("caminhos")
 
-        textoRetornado = services.converteImgParaTexto(caminhos)
-        nomeArquivoRetornado = services.converteTextoParaAudio(textoRetornado, nome)
+        texto_retornado = services.converteImgParaTexto(caminhos)
 
-        return send_from_directory(directory='shared/audios', filename=("%s.mp3" % (nomeArquivoRetornado)), as_attachment=True)
+        # nome_arquivo_retornado = services.converteTextoParaAudio(texto_retornado, nome)
+        # return send_from_directory(directory='shared/audios', filename=("%s.mp3" % (nome_arquivo_retornado)), as_attachment=True)
 
-        # return {
-        #     "nome": nome,
-        #     "caminhos": caminhos
-        #     "texto": textoRetornado
-        # }
+        tamanho_arquivo_retornado = services.converteTextoParaAudio(texto_retornado, nome)
+        tamnho = tamanho_arquivo_retornado / (1024 * 1024)
+
+        return {
+            "message": "[INFO] {criaAudio} - Áudio criado com sucesso.",
+            "metadata": {
+                "nome": nome,
+                "tamanho": tamnho,
+                "formato": "audio/mp3"
+            },
+            "status": bool(True)
+        }
     else:
         return {
-            "erro": "Problem!"
+            "message": "[ERRO] {criaAudio} - Problemas para criar áudio.",
+            "erro": "Problem!",
+            "status": bool(False),
         }
 
 app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=True)

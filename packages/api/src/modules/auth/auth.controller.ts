@@ -1,15 +1,19 @@
 import {
     Controller,
-    UseGuards,
     HttpStatus,
-    Response,
+    Res,
     Post,
     Body,
     HttpException,
     HttpCode,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+    ApiInternalServerErrorResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags,
+} from '@nestjs/swagger';
+import { Response } from 'express';
 import { MessageStatus } from 'src/shared/erros.helper';
 import { UsuariosService } from '../usuarios/shared/services/http/usuarios.service';
 import { RequisicaoLoginDTO } from './shared/dtos/login.dto';
@@ -44,8 +48,8 @@ export class AuthController {
     })
     public async cadastro(
         @Body() dadosReqCadastroUsuario: RequisicaoRegistroDTO,
-        @Response() res
-    ) {
+        @Res() res: Response,
+    ): Promise<Response> {
         try {
             const dadosUsuario = await this.authService.cadastro(
                 dadosReqCadastroUsuario,
@@ -73,17 +77,6 @@ export class AuthController {
         description: 'Sessão iniciada com sucesso',
         type: MessageStatus,
     })
-    @ApiForbiddenResponse({
-        description: '[ERRO] {POST - /login} - Acesso negado',
-        schema: {
-            example: {
-                message: '[ERRO] {POST - /login} - Usuário não tem permissão',
-                status: false,
-                erro: 'Usuário não tem permissão',
-            },
-            type: 'MessageStatus',
-        },
-    })
     @ApiInternalServerErrorResponse({
         description: '[ERRO] {POST - /login} - Erro do servidor',
         schema: {
@@ -95,7 +88,10 @@ export class AuthController {
             type: 'MessageStatus',
         },
     })
-    public async login(@Response() res, @Body() login: RequisicaoLoginDTO) {
+    public async login(
+        @Res() res: Response,
+        @Body() login: RequisicaoLoginDTO,
+    ): Promise<Response> {
         try {
             const { email, senha } = login;
 
@@ -123,7 +119,7 @@ export class AuthController {
         } catch (erro) {
             return res.status(HttpStatus.BAD_REQUEST).json({
                 message: '[ERRO] {login} - Problemas para logar na aplicação.',
-                erro: erro.error,
+                erro: erro.message,
                 status: false,
             });
         }

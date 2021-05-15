@@ -22,6 +22,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import { RequestUser } from 'src/shared/decorators/req-user.decorator';
 import { MessageStatus } from 'src/shared/erros.helper';
 import { Role } from 'src/shared/guards/ role.enum';
 import { Roles } from 'src/shared/guards/roles.decorator';
@@ -32,7 +33,7 @@ import { RequisicaoEditaUsuarioDTO } from './shared/dtos/req-put.dto';
 import { UsuariosService } from './shared/services/http/usuarios.service';
 
 @ApiTags('Usuários')
-@Controller('usuarios')
+@Controller()
 export class UsuariosController {
     constructor(private readonly usuariosService: UsuariosService) {}
 
@@ -41,11 +42,7 @@ export class UsuariosController {
      * Adicionar paginação para listas;
      */
     @HttpCode(200)
-    @Get()
-    // @UseGuards(
-    //   AuthGuard,
-    //   RolesGuard
-    // )
+    @Get('usuarios')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -105,7 +102,7 @@ export class UsuariosController {
     }
 
     @HttpCode(200)
-    @Get(':usuario_id')
+    @Get('usuarios/:usuario_id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -115,11 +112,11 @@ export class UsuariosController {
         type: MessageStatus,
     })
     @ApiForbiddenResponse({
-        description: '[ERRO] {GET - /usuarios/:usuario_id} - Acesso negado',
+        description: '[ERRO] {GET - /usuarios/{usuario_id}} - Acesso negado',
         schema: {
             example: {
                 message:
-                    '[ERRO] {GET - /usuarios/:usuario_id} - Usuário não tem permissão',
+                    '[ERRO] {GET - /usuarios/{usuario_id}} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -127,11 +124,11 @@ export class UsuariosController {
         },
     })
     @ApiInternalServerErrorResponse({
-        description: '[ERRO] {GET - /usuarios/:usuario_id} - Erro do servidor',
+        description: '[ERRO] {GET - /usuarios/{usuario_id}} - Erro do servidor',
         schema: {
             example: {
                 message:
-                    '[ERRO] {GET - /usuarios/:usuario_id} - Ocorreu um erro',
+                    '[ERRO] {GET - /usuarios/{usuario_id}} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
@@ -165,7 +162,7 @@ export class UsuariosController {
     }
 
     @HttpCode(201)
-    @Post()
+    @Post('usuarios')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -226,7 +223,7 @@ export class UsuariosController {
     }
 
     @HttpCode(200)
-    @Put(':usuario_id')
+    @Put('usuarios/:usuario_id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -236,11 +233,11 @@ export class UsuariosController {
         type: MessageStatus,
     })
     @ApiForbiddenResponse({
-        description: '[ERRO] {PUT - /usuarios/:usuario_id} - Acesso negado',
+        description: '[ERRO] {PUT - /usuarios/{usuario_id}} - Acesso negado',
         schema: {
             example: {
                 message:
-                    '[ERRO] {PUT - /usuarios/:usuario_id} - Usuário não tem permissão',
+                    '[ERRO] {PUT - /usuarios/{usuario_id}} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -248,11 +245,11 @@ export class UsuariosController {
         },
     })
     @ApiInternalServerErrorResponse({
-        description: '[ERRO] {PUT - /usuarios/:usuario_id} - Erro do servidor',
+        description: '[ERRO] {PUT - /usuarios/{usuario_id}} - Erro do servidor',
         schema: {
             example: {
                 message:
-                    '[ERRO] {PUT - /usuarios/:usuario_id} - Ocorreu um erro',
+                    '[ERRO] {PUT - /usuarios/{usuario_id}} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
@@ -291,7 +288,7 @@ export class UsuariosController {
     }
 
     @HttpCode(200)
-    @Delete(':usuario_id')
+    @Delete('usuarios/:usuario_id')
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
@@ -301,11 +298,11 @@ export class UsuariosController {
         type: MessageStatus,
     })
     @ApiForbiddenResponse({
-        description: '[ERRO] {DELETE - /usuarios/:usuario_id} - Acesso negado',
+        description: '[ERRO] {DELETE - /usuarios/{usuario_id}} - Acesso negado',
         schema: {
             example: {
                 message:
-                    '[ERRO] {DELETE - /usuarios/:usuario_id} - Usuário não tem permissão',
+                    '[ERRO] {DELETE - /usuarios/{usuario_id}} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
@@ -314,11 +311,11 @@ export class UsuariosController {
     })
     @ApiInternalServerErrorResponse({
         description:
-            '[ERRO] {DELETE - /usuarios/:usuario_id} - Erro do servidor',
+            '[ERRO] {DELETE - /usuarios/{usuario_id}} - Erro do servidor',
         schema: {
             example: {
                 message:
-                    '[ERRO] {DELETE - /usuarios/:usuario_id} - Ocorreu um erro',
+                    '[ERRO] {DELETE - /usuarios/{usuario_id}} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
@@ -330,7 +327,7 @@ export class UsuariosController {
         @Res() res: Response,
     ): Promise<Response> {
         try {
-            const { usuario_id } = chaveUsuario;
+            // const { usuario_id } = chaveUsuario;
             // const removeUsuario = await this.usuariosService.removeUsuario(chaveUsuario);
 
             return res.status(HttpStatus.OK).json({
@@ -350,10 +347,133 @@ export class UsuariosController {
     }
 
     /**
-     * TODO
      * Métodos públicos para o usuário poder se auto-gerenciar
+     * TODO
+     * resetaSenha();
      */
-    // perfil();
-    // editarPerfil();
-    // resetaSenha();
+    @HttpCode(200)
+    @Get('perfil')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Encontra perfil do usuário' })
+    @ApiOkResponse({
+        description: 'Perfil encontrado com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {GET - /perfil} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {GET - /perfil} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description:
+            '[ERRO] {GET - /perfil} - Erro do servidor',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {GET - /perfil} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    async perfil(
+        @RequestUser() usuario_id: string,
+        @Res() res: Response,
+    ): Promise<Response> {
+        try {
+            const usuario = await this.usuariosService.encontraUsuario(
+                usuario_id,
+            );
+
+            return res.status(HttpStatus.OK).json({
+                message: '[INFO] {perfil} - Perfil encontrado com sucesso.',
+                metadata: usuario,
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {perfil} - Problemas para encontrar perfil do usuário.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
+
+    @HttpCode(200)
+    @Put('perfil')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Edita perfil do usuário' })
+    @ApiOkResponse({
+        description: 'Perfil editado com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {PUT - /perfil} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {PUT - /perfil} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description:
+            '[ERRO] {PUT - /perfil} - Erro do servidor',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {PUT - /perfil} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    async editarPerfil(
+        @Body() dadosReqUsuario: Partial<RequisicaoEditaUsuarioDTO>,
+        @RequestUser() usuario_id: string,
+        @Res() res: Response,
+    ): Promise<Response> {
+        try {
+            const { nome, email } = dadosReqUsuario;
+
+            const usuario = await this.usuariosService.encontraUsuario(
+                usuario_id,
+            );
+
+            const usuarioEditado = await this.usuariosService.editaUsuario(
+                usuario_id,
+                nome,
+                email,
+                usuario.papel as Role
+            );
+
+            return res.status(HttpStatus.OK).json({
+                message: '[INFO] {editarPerfil} - Perfil editado com sucesso.',
+                metadata: usuarioEditado,
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {editarPerfil} - Problemas para editar perfil do usuário.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
 }

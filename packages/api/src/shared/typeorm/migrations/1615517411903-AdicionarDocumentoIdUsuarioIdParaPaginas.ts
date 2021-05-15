@@ -57,5 +57,7 @@ export class AdicionarDocumentoIdUsuarioIdParaPaginas1615517411903
 
         await queryRunner.dropForeignKey('paginas', 'PaginaUsuario');
         await queryRunner.dropColumn('paginas', 'usuario_id');
+
+        // await queryRunner.dropTable('paginas');
     }
 }
