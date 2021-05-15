@@ -3,6 +3,7 @@ import * as util from 'util';
 import {
     Body,
     Controller,
+    Delete,
     Get,
     HttpCode,
     HttpStatus,
@@ -10,14 +11,14 @@ import {
     Post,
     Res,
     UseGuards,
-} from '@nestjs/common';
+ HttpService } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { AudiosService } from './shared/services/http/audios.service';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RequestUser } from 'src/shared/decorators/req-user.decorator';
 import { DocumentosService } from '../documentos/shared/services/http/documentos.service';
-import { HttpService } from '@nestjs/common';
+
 import { map } from 'rxjs/operators';
 import { MessageStatus } from 'src/shared/erros.helper';
 
@@ -91,7 +92,7 @@ export class AudiosController {
                     message: '[ERRO] {criaAudio} - Documento não encontrado.',
                     status: false,
                 });
-            };
+            }
 
             const caminhos = [];
             for (const pagina of documento.paginas) {
@@ -271,30 +272,73 @@ export class AudiosController {
         }
     }
 
-    // @HttpCode(200)
-    // @Post()
-    // @UseGuards(AuthGuard('jwt'))
-    // async removeAudio(
-    //     @Body() dadosReqCriaAudio,
-    //     @RequestUser() usuario_id: string,
-    //     @Res() res: Response,
-    // ) {
-    //     try {
-    //         const { documento_id, audio_id } = dadosReqCriaAudio;
+    @HttpCode(200)
+    @Delete(':audio_id')
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Remove áudio criado pelo usuário' })
+    @ApiOkResponse({
+        description: 'Áudio removido com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {DELETE - /audios/{audio_id} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {DELETE - /audios/{audio_id} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {DELETE - /audios/{audio_id} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {DELETE - /audios/{audio_id} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    async removeAudio(
+        @Param() reqRemoveAudio: { audio_id: string },
+        @RequestUser() usuario_id: string,
+        @Res() res: Response,
+    ): Promise<Response> {
+        try {
+            const { audio_id } = reqRemoveAudio;
+            const audio = await this.audiosService.removeAudio(
+                usuario_id,
+                audio_id
+            );
 
-    //         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-    //             message: '[INFO] {removeAudio} - Áudio removido com sucesso.',
-    //             metadata: {},
-    //             status: false,
-    //         });
-    //     } catch (erro) {
-    //         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-    //             message: '[ERRO] {removeAudio} - Problemas para remover áudio.',
-    //             erro: erro.message,
-    //             status: false,
-    //         });
-    //     }
-    // }
+            if (!audio) {
+                return res.status(HttpStatus.NOT_FOUND).json({
+                    message: '[ERRO] {removeAudio} - Áudio não encontrado.',
+                    status: false,
+                });
+            }
+
+            /**
+             * TODO - Aciona serviço para remover arquivo do storage
+             */
+
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message: '[INFO] {removeAudio} - Áudio removido com sucesso.',
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message: '[ERRO] {removeAudio} - Problemas para remover áudio.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
 
     @HttpCode(200)
     @Get(':audio_id[:]download')

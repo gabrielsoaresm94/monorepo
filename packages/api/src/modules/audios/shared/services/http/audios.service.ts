@@ -52,6 +52,26 @@ export class AudiosService {
         return audio;
     }
 
+    public async removeAudio(
+        usuario_id: string,
+        audio_id: string,
+    ): Promise<boolean> {
+        const audio = await this.audiosRepository.encontra(
+            usuario_id,
+            audio_id,
+        );
+
+        if (!audio) {
+            return false;
+        }
+
+        await this.audiosRepository.remove(
+            audio_id,
+        );
+
+        return true;
+    }
+
     public async listaAudios(
         usuario_id: string,
     ): Promise<Array<Audio>> {

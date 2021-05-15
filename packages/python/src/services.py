@@ -4,7 +4,6 @@ from gtts import gTTS
 import os
 
 def converteImgParaTexto(enderecos):
-    # TODO Pedir essa informação da requisição
     extencoes_de_imgs = ['.jpg', '.jpeg', '.png']
     textos = []
 
@@ -20,13 +19,10 @@ def converteImgParaTexto(enderecos):
     trata_linha = [str(palavra.replace('- ', '')) for palavra in linha]
     linha_tratada = " ".join(trata_linha)
 
-    # print(linha_tratada)
-
     return linha_tratada
 
 def converteTextoParaAudio(texto, nome, lingua="pt"):
     transforma_em_audio = gTTS(texto, lang=lingua)
-    # transforma_em_audio.save(nome + '.mp3')
     transforma_em_audio.save("%s.mp3" % os.path.join("./shared/audios", nome))
 
     path_audio = ("./shared/audios/%s.mp3" % nome)

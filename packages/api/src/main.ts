@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 
-// import { servidorNest } from './main.utils';
 import './shared/typeorm';
 import * as express from 'express';
 import * as Morgan from 'morgan';
@@ -12,9 +11,8 @@ import { AppModule } from './modules/app.module';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
 import { PathItemObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-// import { minutosToMs } from './shared/functions/utils';
 import { ExpressAdapter } from '@nestjs/platform-express';
-// import rateLimit from 'express-rate-limit';
+import * as rateLimit from 'express-rate-limit';
 
 /**
  * Constantes
@@ -27,61 +25,37 @@ const ATIVA_LOG = true;
 /**
  * Cria instância do servidor express
  */
-const expressInstance = express();
-
-const infoOpenApi = {
-    titulo: 'Monorepo',
-    contato: {
-        nome: 'Monorepo',
-        site: 'exemplo.dev',
-        email: 'contato@exemplo.dev',
-    },
-    descricao: 'API do monorepo.',
-};
-
-// const init = {
-//     reqLimits: {
-//         minutos: 10,
-//         max: 50,
-//     },
-//     cors: {
-//         origens: '*',
-//         // [
-//         // 	'http://localhost:4201',
-//         // 	'http://localhost:4200',
-//         // ]
-//     },
-// };
+const expressApp = express();
 
 /**
- * Middleware para controle de ataque de negação de serviço através de múltiplas requisições
- * @param expressInstance
+ * Middleware que limita requisições por tempo (minutos)
+ * @param expressApp
  */
-export const adicionaMiddlewareRateLimit = (
-    expressInstance: express.Express,
+export const middlewareRateLimit = (
+    expressApp: express.Express,
 ): void => {
-    // const reqLimits = {
-    //     /**
-    //      * Define a janela de tempo em ms para cada evento de limite
-    //      */
-    //     windowMs: minutosToMs(init.reqLimits.minutos),
 
-    //     /**
-    //      * Limita cada IP a úm certo número de requisições
-    //      */
-    //     max: init.reqLimits.max,
-    // } as rateLimit.Options;
+    const limiter = rateLimit({
+        /**
+         * Limita tempo em (15) minutos
+         */
+        windowMs: 15 * 60 * 1000,
 
-    // expressInstance.use(rateLimit(reqLimits));
-    expressInstance.set('trust proxy', 1);
-};
+        /**
+         * Limita requisições por IP
+         */
+        max: 50,
+    });
+
+    expressApp.use(limiter);
+}
 
 /**
  * Middleware para controle de log de chamada de requisição
- * @param expressInstance
+ * @param expressApp
  */
 export const adicionaMiddlewareMorgan = (
-    expressInstance: express.Express,
+    expressApp: express.Express,
 ): void => {
     const loggerStream: StreamOptions = {
         write: str => {
@@ -89,7 +63,7 @@ export const adicionaMiddlewareMorgan = (
         },
     };
 
-    expressInstance.use(
+    expressApp.use(
         Morgan('combined', {
             stream: loggerStream,
         }),
@@ -97,13 +71,13 @@ export const adicionaMiddlewareMorgan = (
 };
 
 /**
- * Adiciona middleware Helmet para remoção de ataques simples por meio de cabeçalho
- * @param expressInstance
+ * Middleware para Helmet, contra ataques por cabeçalho
+ * @param expressApp
  */
 export const adicionaMiddlewareHelmet = (
-    expressInstance: express.Express,
+    expressApp: express.Express,
 ): void => {
-    expressInstance.use(Helmet());
+    expressApp.use(Helmet());
 };
 
 /**
@@ -132,7 +106,7 @@ export const removeCaracteresEspeciaisNoPath = (
 export const adicionaOpenAPIDocs = (
     app: INestApplication,
     info: {
-        titulo: string,
+        titulo: string;
         contato: {
             nome: string;
             site: string;
@@ -167,24 +141,36 @@ export const adicionaOpenAPIDocs = (
 };
 
 async function bootstrap() {
-    // Importa o helmet para proteger vulnerabilidades conhecidas do HTTP
-    adicionaMiddlewareHelmet(expressInstance);
+    // Helmet
+    adicionaMiddlewareHelmet(expressApp);
 
-    // Ativa o logger das requisições
-    adicionaMiddlewareMorgan(expressInstance);
+    // Logger nas requisições
+    adicionaMiddlewareMorgan(expressApp);
 
-    // Adiciona o rate limit para um controle mais preciso da segurança da API
-    adicionaMiddlewareRateLimit(expressInstance);
+    // Rate limit
+    middlewareRateLimit(expressApp);
 
     const app = await NestFactory.create(
         AppModule,
-        new ExpressAdapter(expressInstance),
+        new ExpressAdapter(expressApp),
         {
             logger: EXECULTA_LOCAL ? ATIVA_LOG : DESATIVA_LOG,
         },
     );
 
-    adicionaOpenAPIDocs(app, infoOpenApi, PORTA);
+    adicionaOpenAPIDocs(
+        app,
+        {
+            titulo: 'Monorepo',
+            contato: {
+                nome: 'Monorepo',
+                site: 'exemplo.dev',
+                email: 'contato@exemplo.dev',
+            },
+            descricao: 'API do monorepo.',
+        },
+        PORTA,
+    );
 
     await app.listen(PORTA);
 }

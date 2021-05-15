@@ -45,12 +45,16 @@ export class AudiosRepository {
         audio_id: string,
     ): Promise<Audio> {
         const audio = await this.ormRepository.find({
-            where: [{ usuario_id: usuario_id, documento_id: audio_id }],
+            where: [{ usuario_id: usuario_id, audio_id: audio_id }],
         });
 
         const audioEncontrado = audio[0];
 
         return audioEncontrado;
+    }
+
+    public async remove(audio_id: string): Promise<void> {
+        await this.ormRepository.delete({ audio_id: audio_id });
     }
 
     public async lista(usuario_id: string): Promise<Array<Audio>> {

@@ -12,7 +12,7 @@ const databaseConfig: Partial<ConnectionOptions> = {
     cli: {
         migrationsDir: 'dist/shared/typeorm/migrations',
     },
-    entities: ['**/*entity.js']
+    entities: ['**/*entity.js'],
 };
 
 export = databaseConfig;
