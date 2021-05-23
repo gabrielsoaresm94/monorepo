@@ -49,4 +49,17 @@ export class DocumentosRepository {
 
         return documentoEncontrado;
     }
+
+    public async encontraPorAudio(
+        usuario_id: string,
+        audio_id: string,
+    ): Promise<Documento> {
+        const documento = await this.ormRepository.find({
+            where: [{ usuario_id: usuario_id, audio_id: audio_id }],
+        });
+
+        const documentoEncontrado = documento[0];
+
+        return documentoEncontrado;
+    }
 }

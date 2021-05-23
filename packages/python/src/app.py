@@ -42,4 +42,20 @@ def criaAudio():
             "status": bool(False),
         }
 
+@app.route('/audios/<nome>',  methods=['DELETE'])
+def removeAudio(nome):
+    audio_removido = services.removeAudio(nome)
+
+    if (audio_removido):
+        return {
+            "message": "[INFO] {removeAudio} - Áudio removido com sucesso.",
+            "status": bool(True)
+        }
+    else:
+        return {
+            "message": "[ERRO] {removeAudio} - Problemas para remover áudio.",
+            "erro": "Problem!",
+            "status": bool(False),
+        }
+
 app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=True)

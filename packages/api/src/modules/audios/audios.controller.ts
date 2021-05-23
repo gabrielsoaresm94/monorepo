@@ -82,6 +82,7 @@ export class AudiosController {
     ): Promise<Response> {
         try {
             const { documento_id } = dadosReqCriaAudio;
+
             const documento = await this.documentosService.encontraDocumento(
                 usuario_id,
                 documento_id,
@@ -101,15 +102,15 @@ export class AudiosController {
 
             const criaAudio = (await this.httpService
                 .post('http://localhost:5000/audios', {
-                    nome: documento.nome,
+                    nome: `${documento.nome}@${documento.documento_id}`,
                     caminhos: caminhos,
                 })
                 .pipe(map(resp => resp.data))
                 .toPromise()) as {
-                message: string;
-                metadata: { formato: string; nome: string; tamanho: number };
-                status: boolean;
-            };
+                    message: string;
+                    metadata: { formato: string; nome: string; tamanho: number };
+                    status: boolean;
+                };
 
             if (criaAudio.status) {
                 const audio = await this.audiosService.criaAudio(
@@ -130,6 +131,10 @@ export class AudiosController {
                         status: false,
                     });
                 }
+
+                documento.audio_id = audio.audio_id;
+
+                await this.documentosService.adicionaAudioAoDocumento(documento);
 
                 return res.status(HttpStatus.CREATED).json({
                     message: '[INFO] {criaAudio} - Áudio criado com sucesso.',
@@ -311,26 +316,66 @@ export class AudiosController {
     ): Promise<Response> {
         try {
             const { audio_id } = reqRemoveAudio;
-            const audio = await this.audiosService.removeAudio(
+
+            const documento = await this.documentosService.encontraDocumentoPorAudio(
                 usuario_id,
-                audio_id
+                audio_id,
             );
 
-            if (!audio) {
-                return res.status(HttpStatus.NOT_FOUND).json({
-                    message: '[ERRO] {removeAudio} - Áudio não encontrado.',
+            if (!documento) {
+                return res.status(HttpStatus.BAD_REQUEST).json({
+                    message: '[ERRO] {criaAudio} - Documento para este áudio não foi encontrado.',
                     status: false,
                 });
             }
 
-            /**
-             * TODO - Aciona serviço para remover arquivo do storage
-             */
+            const removeAudio = (await this.httpService
+                .delete(`http://localhost:5000/audios/${documento.nome}@${documento.documento_id}`)
+                .pipe(map(resp => resp.data))
+                .toPromise()) as {
+                    message: string;
+                    metadata: { formato: string; nome: string; tamanho: number };
+                    status: boolean;
+                };
 
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                message: '[INFO] {removeAudio} - Áudio removido com sucesso.',
-                status: true,
-            });
+            if (removeAudio.status) {
+                const audio = await this.audiosService.removeAudio(
+                    usuario_id,
+                    audio_id
+                );
+
+                if (!audio) {
+                    /**
+                     * TODO - Rolback
+                     * acessar endpoint para remover arquivo do storage
+                     */
+
+                    return res.status(HttpStatus.BAD_REQUEST).json({
+                        message: '[ERRO] {removeAudio} - Problemas para remover áudio.',
+                        status: false,
+                    });
+                }
+
+                documento.audio_id = null;
+
+                await this.documentosService.removeAudioDoDocumento(documento);
+
+                return res.status(HttpStatus.CREATED).json({
+                    message: '[INFO] {criaAudio} - Áudio removido com sucesso.',
+                    metadata: audio,
+                    status: true,
+                });
+            } else {
+                /**
+                 * TODO - Rolback
+                 * acessar endpoint para remover arquivo do storage
+                 */
+
+                return res.status(HttpStatus.BAD_REQUEST).json({
+                    message: '[ERRO] {criaAudio} - Problemas para remover áudio.',
+                    status: false,
+                });
+            }
         } catch (erro) {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 message: '[ERRO] {removeAudio} - Problemas para remover áudio.',

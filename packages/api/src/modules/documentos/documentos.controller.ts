@@ -230,8 +230,6 @@ export class DocumentosController {
         }
     }
 
-    // (method) multer.DiskStorageOptions.filename?(req: e.Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>, file: Express.Multer.File, callback: (error: Error, filename: string) => void): void
-
     @HttpCode(201)
     @Post()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
