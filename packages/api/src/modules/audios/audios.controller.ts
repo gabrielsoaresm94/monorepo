@@ -21,6 +21,8 @@ import { DocumentosService } from '../documentos/shared/services/http/documentos
 
 import { map } from 'rxjs/operators';
 import { MessageStatus } from 'src/shared/erros.helper';
+import { RequisicaoEncontraAudioDTO } from './shared/dtos/req-get.dto';
+import { RequisicaoCriaAudioDTO } from './shared/dtos/req-post.dto';
 
 @ApiTags('Audios')
 @Controller('audios')
@@ -76,7 +78,7 @@ export class AudiosController {
         },
     })
     async criaAudio(
-        @Body() dadosReqCriaAudio: {documento_id: string},
+        @Body() dadosReqCriaAudio: RequisicaoCriaAudioDTO,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
     ): Promise<Response> {
@@ -251,7 +253,7 @@ export class AudiosController {
         },
     })
     async encontraAudio(
-        @Param() reqEncontraAudio: { audio_id: string },
+        @Param() reqEncontraAudio: RequisicaoEncontraAudioDTO,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
     ): Promise<Response | void> {
@@ -310,7 +312,7 @@ export class AudiosController {
         },
     })
     async removeAudio(
-        @Param() reqRemoveAudio: { audio_id: string },
+        @Param() reqRemoveAudio: RequisicaoEncontraAudioDTO,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
     ): Promise<Response> {
@@ -418,7 +420,7 @@ export class AudiosController {
         },
     })
     async download(
-        @Param() chaveAudio: { audio_id: string },
+        @Param() chaveAudio: RequisicaoEncontraAudioDTO,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
     ): Promise<Response | void> {
@@ -476,7 +478,7 @@ export class AudiosController {
         },
     })
     async play(
-        @Param() chaveAudio: { audio_id: string },
+        @Param() chaveAudio: RequisicaoEncontraAudioDTO,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
     ): Promise<Response | void> {

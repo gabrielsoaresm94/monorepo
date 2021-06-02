@@ -25,7 +25,7 @@ import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { Roles } from 'src/shared/guards/roles.decorator';
 import { Role } from 'src/shared/guards/ role.enum';
 import { RequisicaoCriaDocumentoDTO } from './shared/dtos/req-post.dto';
-import { RequisicaoListaDocumentosDTO } from './shared/dtos/req-get.dto';
+import { RequisicaoEncontraDocumentoDTO, RequisicaoListaDocumentosDTO } from './shared/dtos/req-get.dto';
 import { MessageStatus } from 'src/shared/erros.helper';
 
 @ApiTags('Documentos')
@@ -74,9 +74,9 @@ export class DocumentosController {
         },
     })
     async editaDocumento(
-        @Param() chaveDocumento: { documento_id: string },
+        @Param() chaveDocumento: RequisicaoEncontraDocumentoDTO,
         @RequestUser() usuario_id: string,
-        @Body() dadosReqUsuario: Partial<RequisicaoCriaDocumentoDTO>,
+        @Body() dadosReqUsuario: RequisicaoCriaDocumentoDTO,
         @Res() res: Response,
     ): Promise<Response> {
         try {
@@ -203,7 +203,7 @@ export class DocumentosController {
         },
     })
     async encontraDocumento(
-        @Param() chaveDocumento: { documento_id: string },
+        @Param() chaveDocumento: RequisicaoEncontraDocumentoDTO,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
     ): Promise<Response> {
@@ -295,7 +295,6 @@ export class DocumentosController {
              * Adiciona propriedades das imagens enviadas,
              * no vetor
              */
-
             const imagens = [];
             paginas.forEach(file => {
                 const fileReponse = {

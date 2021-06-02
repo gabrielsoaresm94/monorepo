@@ -11,10 +11,12 @@ import {
     Query,
     Res,
     UseGuards,
+    ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiBearerAuth,
+    ApiBody,
     ApiForbiddenResponse,
     ApiInternalServerErrorResponse,
     ApiOkResponse,
@@ -27,8 +29,9 @@ import { MessageStatus } from 'src/shared/erros.helper';
 import { Role } from 'src/shared/guards/ role.enum';
 import { Roles } from 'src/shared/guards/roles.decorator';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
-import { RequisicaoListaUsuariosDTO } from './shared/dtos/req-get.dto';
+import { RequisicaoEncontraUsuarioDTO, RequisicaoListaUsuariosDTO } from './shared/dtos/req-get.dto';
 import { RequisicaoCriaUsuarioDTO } from './shared/dtos/req-post.dto';
+import { RequisicaoEditaPerfilDTO } from './shared/dtos/req-put-perfil.dto';
 import { RequisicaoEditaUsuarioDTO } from './shared/dtos/req-put.dto';
 import { UsuariosService } from './shared/services/http/usuarios.service';
 
@@ -78,10 +81,10 @@ export class UsuariosController {
         @Res() res: Response,
     ): Promise<Response> {
         try {
-            const { usuario, email } = dadosReqListaUsuario;
+            const { usuario_id, email } = dadosReqListaUsuario;
 
             const usuarios = await this.usuariosService.listaUsuarios(
-                usuario,
+                usuario_id,
                 email,
             );
 
@@ -136,7 +139,7 @@ export class UsuariosController {
         },
     })
     async encontraUsuario(
-        @Param() chaveUsuario: { usuario_id: string },
+        @Param() chaveUsuario: RequisicaoEncontraUsuarioDTO,
         @Res() res: Response,
     ): Promise<Response> {
         try {
@@ -195,7 +198,7 @@ export class UsuariosController {
         },
     })
     async criaUsuario(
-        @Body() dadosReqUsuario: RequisicaoCriaUsuarioDTO,
+        @Body(ValidationPipe) dadosReqUsuario: RequisicaoCriaUsuarioDTO,
         @Res() res: Response,
     ): Promise<Response> {
         try {
@@ -257,8 +260,8 @@ export class UsuariosController {
         },
     })
     async editaUsuario(
-        @Body() dadosReqUsuario: Partial<RequisicaoEditaUsuarioDTO>,
-        @Param() chaveUsuario: { usuario_id: string },
+        @Body() dadosReqUsuario: RequisicaoEditaUsuarioDTO,
+        @Param() chaveUsuario: RequisicaoEncontraUsuarioDTO,
         @Res() res: Response,
     ): Promise<Response> {
         try {
@@ -323,7 +326,7 @@ export class UsuariosController {
         },
     })
     async removeUsuario(
-        @Param() chaveUsuario: { usuario_id: string },
+        @Param() chaveUsuario: RequisicaoEncontraUsuarioDTO,
         @Res() res: Response,
     ): Promise<Response> {
         try {
@@ -443,8 +446,9 @@ export class UsuariosController {
             type: 'MessageStatus',
         },
     })
+    @ApiBody({ type: RequisicaoEditaPerfilDTO })
     async editarPerfil(
-        @Body() dadosReqUsuario: Partial<RequisicaoEditaUsuarioDTO>,
+        @Body() dadosReqUsuario: RequisicaoEditaPerfilDTO,
         @RequestUser() usuario_id: string,
         @Res() res: Response,
     ): Promise<Response> {

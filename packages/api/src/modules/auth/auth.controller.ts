@@ -16,7 +16,7 @@ import {
 import { Response } from 'express';
 import { MessageStatus } from 'src/shared/erros.helper';
 import { UsuariosService } from '../usuarios/shared/services/http/usuarios.service';
-import { RequisicaoLoginDTO } from './shared/dtos/login.dto';
+import { RequisicaoLoginDTO } from './shared/dtos/req-login.dto';
 import { RequisicaoRegistroDTO } from './shared/dtos/req-registro.dto';
 import { AuthService } from './shared/services/http/auth.service';
 
