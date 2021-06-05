@@ -1,8 +1,11 @@
+import fs from 'fs';
 import {
     Body,
     Controller,
+    Delete,
     Get,
     HttpCode,
+    HttpService,
     HttpStatus,
     Param,
     Post,
@@ -27,11 +30,17 @@ import { Role } from 'src/shared/guards/ role.enum';
 import { RequisicaoCriaDocumentoDTO } from './shared/dtos/req-post.dto';
 import { RequisicaoEncontraDocumentoDTO, RequisicaoListaDocumentosDTO } from './shared/dtos/req-get.dto';
 import { MessageStatus } from 'src/shared/erros.helper';
+import { map } from 'rxjs/operators';
+import { AudiosService } from '../audios/shared/services/http/audios.service';
 
 @ApiTags('Documentos')
 @Controller('documentos')
 export class DocumentosController {
-    constructor(private readonly documentosService: DocumentosService) {}
+    constructor(
+        private readonly documentosService: DocumentosService,
+        private readonly audiosService: AudiosService,
+        private readonly httpService: HttpService,
+    ) {}
 
     /**
      */
@@ -358,6 +367,137 @@ export class DocumentosController {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
                 message:
                     '[ERRO] {criaDocumento} - Problemas para criar documento.',
+                erro: erro.message,
+                status: false,
+            });
+        }
+    }
+
+    @HttpCode(200)
+    @Delete(':documento_id')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.ADMIN, Role.USUARIO)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Remove documento do usuário' })
+    @ApiOkResponse({
+        description: 'Documento removido com sucesso',
+        type: MessageStatus,
+    })
+    @ApiForbiddenResponse({
+        description: '[ERRO] {DELETE - /documentos/{documento_id}} - Acesso negado',
+        schema: {
+            example: {
+                message:
+                    '[ERRO] {DELETE - /documentos/{documento_id}} - Usuário não tem permissão',
+                status: false,
+                erro: 'Usuário não tem permissão',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    @ApiInternalServerErrorResponse({
+        description: '[ERRO] {DELETE - /documentos/{documento_id}} - Erro do servidor',
+        schema: {
+            example: {
+                message: '[ERRO] {DELETE - /documentos/{documento_id}} - Ocorreu um erro',
+                status: false,
+                erro: 'Erro ao inicializar objeto',
+            },
+            type: 'MessageStatus',
+        },
+    })
+    async removeDocumento(
+        @Param() chaveDocumento: RequisicaoEncontraDocumentoDTO,
+        @RequestUser() usuario_id: string,
+        @Res() res: Response,
+    ): Promise<Response> {
+        try {
+            const { documento_id } = chaveDocumento;
+            const documento = await this.documentosService.encontraDocumento(
+                usuario_id,
+                documento_id,
+            );
+
+            if (!documento) {
+                return res.status(HttpStatus.BAD_REQUEST).json({
+                    message: '[ERRO] {removeDocumento} - Documento não foi encontrado.',
+                    status: false,
+                });
+            }
+
+            if (documento.audio_id) {
+                const removeAudio = (await this.httpService
+                    .delete(`http://localhost:5000/audios/${documento.nome}@${documento.documento_id}`)
+                    .pipe(map(resp => resp.data))
+                    .toPromise()) as {
+                        message: string;
+                        metadata: { formato: string; nome: string; tamanho: number };
+                        status: boolean;
+                    };
+
+                if (removeAudio.status) {
+                    const audio = await this.audiosService.removeAudio(
+                        usuario_id,
+                        documento.audio_id
+                    );
+
+                    if (!audio) {
+                        /**
+                         * TODO - Rolback
+                         * acessar endpoint para remover arquivo do storage
+                         */
+
+                        return res.status(HttpStatus.BAD_REQUEST).json({
+                            message: '[ERRO] {removeDocumento} - Problemas para remover áudio.',
+                            status: false,
+                        });
+                    }
+
+                    documento.audio_id = null;
+
+                    await this.documentosService.removeAudioDoDocumento(documento);
+                } else {
+                    /**
+                     * TODO - Rolback
+                     * acessar endpoint para remover arquivo do storage
+                     */
+
+                    return res.status(HttpStatus.BAD_REQUEST).json({
+                        message: '[ERRO] {removeDocumento} - Problemas para remover áudio.',
+                        status: false,
+                    });
+                }
+            }
+
+            if (documento.paginas || documento.paginas.length > 0) {
+                for (const pagina of documento.paginas) {
+                    fs.unlink(`../../shared/images/${pagina.nome}`, (err) => {
+                        if (err) {
+                            // TODO - Rolback
+                            throw err;
+                        };
+                        console.log(`A página "../../shared/images/${pagina.nome}" foi removida`);
+                    });
+
+                    await this.documentosService.removePagina(
+                        pagina.pagina_id
+                    );
+                }
+            }
+
+            await this.documentosService.removeDocumento(
+                documento_id
+            );
+
+            return res.status(HttpStatus.OK).json({
+                message:
+                    '[INFO] {removeDocumento} - Documento removido com sucesso.',
+                status: true,
+            });
+        } catch (erro) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                message:
+                    '[ERRO] {removeDocumento} - Problemas para remover documento.',
                 erro: erro.message,
                 status: false,
             });

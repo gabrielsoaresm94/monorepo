@@ -156,4 +156,20 @@ export class DocumentosService {
 
         return documentoSemAudio;
     }
+
+    public async removeDocumento(
+        documento_id: string,
+    ): Promise<void> {
+        await this.documentosRepository.remove(
+            documento_id,
+        );
+    }
+
+    public async removePagina(
+        pagina_id: string,
+    ): Promise<void> {
+        await this.paginasRepository.remove(
+            pagina_id,
+        );
+    }
 }

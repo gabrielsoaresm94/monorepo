@@ -134,12 +134,9 @@ export class UsuariosService {
         return editaUsuario;
     }
 
-    // public async removeUsuario(usuario_id: string): Promise<Usuario> {
-    //     const usuario = await this.usuariosRepository.encontraPorId(usuario_id);
-
-    //     if (!usuario) {
-    //         throw new Error('Usuário não encontrado!');
-    //     }
-    //     return usuario;
-    // }
+    public async removeUsuario(usuario_id: string): Promise<void> {
+        await this.usuariosRepository.remove(
+            usuario_id,
+        );
+    }
 }

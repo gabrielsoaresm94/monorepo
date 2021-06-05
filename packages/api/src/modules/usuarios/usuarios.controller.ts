@@ -1,9 +1,11 @@
+import fs from 'fs';
 import {
     Body,
     Controller,
     Delete,
     Get,
     HttpCode,
+    HttpService,
     HttpStatus,
     Param,
     Post,
@@ -29,16 +31,24 @@ import { MessageStatus } from 'src/shared/erros.helper';
 import { Role } from 'src/shared/guards/ role.enum';
 import { Roles } from 'src/shared/guards/roles.decorator';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { DocumentosService } from '../documentos/shared/services/http/documentos.service';
 import { RequisicaoEncontraUsuarioDTO, RequisicaoListaUsuariosDTO } from './shared/dtos/req-get.dto';
 import { RequisicaoCriaUsuarioDTO } from './shared/dtos/req-post.dto';
 import { RequisicaoEditaPerfilDTO } from './shared/dtos/req-put-perfil.dto';
 import { RequisicaoEditaUsuarioDTO } from './shared/dtos/req-put.dto';
 import { UsuariosService } from './shared/services/http/usuarios.service';
+import { AudiosService } from '../audios/shared/services/http/audios.service';
+import { map } from 'rxjs/operators';
 
 @ApiTags('Usuários')
 @Controller()
 export class UsuariosController {
-    constructor(private readonly usuariosService: UsuariosService) {}
+    constructor(
+        private readonly usuariosService: UsuariosService,
+        private readonly documentosService: DocumentosService,
+        private readonly audiosService: AudiosService,
+        private readonly httpService: HttpService,
+    ) {}
 
     /**
      * TODO
@@ -330,13 +340,98 @@ export class UsuariosController {
         @Res() res: Response,
     ): Promise<Response> {
         try {
-            // const { usuario_id } = chaveUsuario;
-            // const removeUsuario = await this.usuariosService.removeUsuario(chaveUsuario);
+            const { usuario_id } = chaveUsuario;
+
+            const usuario = await this.usuariosService.encontraUsuario(
+                usuario_id
+            );
+
+            if (!usuario) {
+                return res.status(HttpStatus.NOT_FOUND).json({
+                    message:
+                        '[ERRO] {removeUsuario} - Usuário não encontrado.',
+                    status: true,
+                });
+            }
+
+            const documentos = await this.documentosService.listaDocumentos(
+                usuario_id,
+                '',
+            );
+
+            if (documentos) {
+                for (const documento of documentos) {
+                    if (documento.audio_id) {
+                        const removeAudio = (await this.httpService
+                            .delete(`http://localhost:5000/audios/${documento.nome}@${documento.documento_id}`)
+                            .pipe(map(resp => resp.data))
+                            .toPromise()) as {
+                                message: string;
+                                metadata: { formato: string; nome: string; tamanho: number };
+                                status: boolean;
+                            };
+
+                        if (removeAudio.status) {
+                            const audio = await this.audiosService.removeAudio(
+                                usuario_id,
+                                documento.audio_id
+                            );
+
+                            if (!audio) {
+                                /**
+                                 * TODO - Rolback
+                                 * acessar endpoint para remover arquivo do storage
+                                 */
+
+                                return res.status(HttpStatus.BAD_REQUEST).json({
+                                    message: '[ERRO] {removeDocumento} - Problemas para remover áudio.',
+                                    status: false,
+                                });
+                            }
+
+                            documento.audio_id = null;
+
+                            await this.documentosService.removeAudioDoDocumento(documento);
+                        } else {
+                            /**
+                             * TODO - Rolback
+                             * acessar endpoint para remover arquivo do storage
+                             */
+
+                            return res.status(HttpStatus.BAD_REQUEST).json({
+                                message: '[ERRO] {removeDocumento} - Problemas para remover áudio.',
+                                status: false,
+                            });
+                        }
+                    }
+
+                    if (documento.paginas || documento.paginas.length > 0) {
+                        for (const pagina of documento.paginas) {
+                            fs.unlink(`../../shared/images/${pagina.nome}`, (err) => {
+                                if (err) {
+                                    // TODO - Rolback
+                                    throw err;
+                                };
+                                console.log(`A página "../../shared/images/${pagina.nome}" foi removida`);
+                            });
+
+                            await this.documentosService.removePagina(
+                                pagina.pagina_id
+                            );
+                        }
+                    }
+
+                    await this.documentosService.removeDocumento(
+                        documento.documento_id
+                    );
+                }
+            }
+
+            await this.usuariosService.removeUsuario(usuario_id);
 
             return res.status(HttpStatus.OK).json({
                 message:
                     '[INFO] {removeUsuario} - Usuário removido com sucesso.',
-                // metedata: removeUsuario,
                 status: true,
             });
         } catch (erro) {

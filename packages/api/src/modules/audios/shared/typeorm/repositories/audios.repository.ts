@@ -53,6 +53,7 @@ export class AudiosRepository {
         return audioEncontrado;
     }
 
+    // TODO - adicionar usuario_id, para consulta
     public async remove(audio_id: string): Promise<void> {
         await this.ormRepository.delete({ audio_id: audio_id });
     }
