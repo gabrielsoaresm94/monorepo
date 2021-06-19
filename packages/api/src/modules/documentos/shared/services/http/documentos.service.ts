@@ -64,7 +64,11 @@ export class DocumentosService {
             }
         }
 
-        documentos = !assunto ? documentos : documentos.filter((doc) => { return doc.assunto === assunto })
+        documentos = !assunto
+            ? documentos
+            : documentos.filter((doc) => {
+                  return doc.assunto === assunto;
+              });
 
         return documentos;
     }
@@ -87,6 +91,18 @@ export class DocumentosService {
         return documento;
     }
 
+    public async encontraDocumentoPorAudio(
+        usuario_id: string,
+        audio_id: string,
+    ): Promise<Documento> {
+        const documento = await this.documentosRepository.encontraPorAudio(
+            usuario_id,
+            audio_id,
+        );
+
+        return documento;
+    }
+
     public async editaDocumento(
         usuario_id: string,
         documento_id: string,
@@ -96,7 +112,7 @@ export class DocumentosService {
     ): Promise<Documento> {
         const consultaDocumento = await this.documentosRepository.encontra(
             usuario_id,
-            documento_id
+            documento_id,
         );
 
         if (!consultaDocumento) {
@@ -121,5 +137,39 @@ export class DocumentosService {
         );
 
         return editaUsuario;
+    }
+
+    public async adicionaAudioAoDocumento(
+        documento: Documento,
+    ): Promise<Documento> {
+        const documentoSalvo = await this.documentosRepository.salva(documento);
+
+        return documentoSalvo;
+    }
+
+    public async removeAudioDoDocumento(
+        documento: Documento,
+    ): Promise<Documento> {
+        const documentoSemAudio = await this.documentosRepository.salva(
+            documento,
+        );
+
+        return documentoSemAudio;
+    }
+
+    public async removeDocumento(
+        documento_id: string,
+    ): Promise<void> {
+        await this.documentosRepository.remove(
+            documento_id,
+        );
+    }
+
+    public async removePagina(
+        pagina_id: string,
+    ): Promise<void> {
+        await this.paginasRepository.remove(
+            pagina_id,
+        );
     }
 }

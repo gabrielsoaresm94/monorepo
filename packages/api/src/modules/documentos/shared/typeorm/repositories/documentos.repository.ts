@@ -49,4 +49,22 @@ export class DocumentosRepository {
 
         return documentoEncontrado;
     }
+
+    // TODO - adicionar usuario_id, para consulta
+    public async remove(documento_id: string): Promise<void> {
+        await this.ormRepository.delete({ documento_id: documento_id });
+    }
+
+    public async encontraPorAudio(
+        usuario_id: string,
+        audio_id: string,
+    ): Promise<Documento> {
+        const documento = await this.ormRepository.find({
+            where: [{ usuario_id: usuario_id, audio_id: audio_id }],
+        });
+
+        const documentoEncontrado = documento[0];
+
+        return documentoEncontrado;
+    }
 }

@@ -45,4 +45,9 @@ export class UsuariosRepository {
         const usuarios = await this.ormRepository.find();
         return usuarios;
     }
+
+    // TODO - adicionar usuario_id, para consulta
+    public async remove(usuario_id: string): Promise<void> {
+        await this.ormRepository.delete({ usuario_id: usuario_id });
+    }
 }

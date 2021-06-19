@@ -29,3 +29,11 @@ def converteTextoParaAudio(texto, nome, lingua="pt"):
     size_bytes = os.path.getsize(path_audio)
 
     return size_bytes
+
+def removeAudio(nome):
+    if os.path.exists("./shared/audios/%s.mp3" % nome):
+        os.remove("./shared/audios/%s.mp3" % nome)
+
+        return bool(True)
+    else:
+        return bool(False)

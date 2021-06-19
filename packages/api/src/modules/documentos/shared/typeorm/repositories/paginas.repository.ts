@@ -43,4 +43,9 @@ export class PaginasRepository {
 
         return paginas;
     }
+
+    // TODO - adicionar usuario_id, para consulta
+    public async remove(pagina_id: string): Promise<void> {
+        await this.ormRepository.delete({ pagina_id: pagina_id });
+    }
 }
