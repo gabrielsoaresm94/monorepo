@@ -1,15 +1,15 @@
-from flask import Flask, request, jsonify, send_from_directory
-app = Flask(__name__)
+from flask import Blueprint, request, jsonify, send_from_directory
+from modules.audios.services import converteImgParaTexto, converteTextoParaAudio, removeAudio
 
-import services
+audiosModule = Blueprint('audios', __name__)
 
-@app.route('/')
-def hello_world():
+@audiosModule.route('/')
+def index():
     return {
         "nome": "Hello, World!"
     }
 
-@app.route('/audios',  methods=['POST'])
+@audiosModule.route('/audios',  methods=['POST'])
 def criaAudio():
     if (request.is_json):
         print (request.is_json)
@@ -18,12 +18,12 @@ def criaAudio():
         nome = body.get("nome")
         caminhos = body.get("caminhos")
 
-        texto_retornado = services.converteImgParaTexto(caminhos)
+        texto_retornado = converteImgParaTexto(caminhos)
 
-        # nome_arquivo_retornado = services.converteTextoParaAudio(texto_retornado, nome)
+        # nome_arquivo_retornado = converteTextoParaAudio(texto_retornado, nome)
         # return send_from_directory(directory='shared/audios', filename=("%s.mp3" % (nome_arquivo_retornado)), as_attachment=True)
 
-        tamanho_arquivo_retornado = services.converteTextoParaAudio(texto_retornado, nome)
+        tamanho_arquivo_retornado = converteTextoParaAudio(texto_retornado, nome)
         tamnho = tamanho_arquivo_retornado / (1024 * 1024)
 
         return {
@@ -42,9 +42,9 @@ def criaAudio():
             "status": bool(False),
         }
 
-@app.route('/audios/<nome>',  methods=['DELETE'])
+@audiosModule.route('/audios/<nome>',  methods=['DELETE'])
 def removeAudio(nome):
-    audio_removido = services.removeAudio(nome)
+    audio_removido = removeAudio(nome)
 
     if (audio_removido):
         return {
@@ -57,5 +57,3 @@ def removeAudio(nome):
             "erro": "Problem!",
             "status": bool(False),
         }
-
-app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=True)

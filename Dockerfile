@@ -16,6 +16,6 @@ WORKDIR /app
 
 EXPOSE 5000
 
-CMD [ "python3", "./app.py" ]
+CMD [ "python3", "./main.py" ]
 
 # /usr/bin/python3 -m pip install -U pylint --user

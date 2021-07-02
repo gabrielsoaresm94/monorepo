@@ -25,6 +25,23 @@ Depois disso será necessário dispor de uma imagem Docker do banco Postgres, pa
 ```
 docker run --name <nome-banco> -e TZ=America/Sao_Paulo -e POSTGRES_PASSWORD=<senha> -p 5432:5432 -d postgres
 ```
+
+### .env
+Necessário também copiar o arquivo, .env.example e colocar as informações sensíveis para o arquivo .env.
+
+### Migrations
+Rodar migrations escritas para gerar tabelas no banco:
+```
+cd packages/api
+yarn run migration:run
+```
+
+Exemplo de como criar uma migration:
+```bash
+yarn run typeorm:cli -- migration:create -n <NomeMigration>
+```
+
+### Python container
 Assim como o Docker, listado acima, será preciso ter instalado o Docker-compose, para a criação de um container com a linguagem Python e das bibliotecas que serão utilizadas pela mesma, para o pacote `/python` funcionar e as mudanças feitas nas pastas contidas em `/shared` forem captadas pelo container. Ele pode ser rodado de forma independente utilizando os comandos a seguir, para disparar o shell script que foi criado para automatizar o processo:
 ```
 cd packages/python
