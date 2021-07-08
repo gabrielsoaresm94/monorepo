@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify, send_from_directory
 from modules.audios.services import converteImgParaTexto, converteTextoParaAudio, removeAudio
+from decorators import token_required
 
 audiosModule = Blueprint('audios', __name__)
 
 @audiosModule.route('/')
+@token_required
 def index():
     return {
         "nome": "Hello, World!"
