@@ -8,7 +8,7 @@
     "start": "lerna run start",
     "start:dev": "lerna run start:dev",
     "start:api": "lerna run --scope @monorepo/api start:dev",
-    "start:python": "sudo bash ./packages/python/scripts/start.sh",
+    "start:services": "sudo bash ./scripts/start.sh",
     "lint": "lerna run lint"
   },
   "devDependencies": {

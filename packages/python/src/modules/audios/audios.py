@@ -6,7 +6,7 @@ audiosModule = Blueprint('audios', __name__)
 
 @audiosModule.route('/')
 @token_required
-def index():
+def index(self):
     return {
         "nome": "Hello, World!"
     }

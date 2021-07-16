@@ -8,7 +8,7 @@ import json
 secret = "Codebrains"
 app = create_app()
 
-class Users(db.Model):  
+class Usuarios(db.Model):  
     usuario_id = db.Column(db.String(50), primary_key=True)
     nome = db.Column(db.String(50))
     email = db.Column(db.String(50))
@@ -28,15 +28,14 @@ def token_required(f):
 
     if not token:
         return jsonify({'message': 'a valid token is missing'})
-
+        
     try:
-      # data = jwt.decode(encoded, "secret", algorithms=["HS256"])
-      data = jwt.decode(token, options={"verify_signature": False})
-      print(data, 2999)
-      current_user = Users.query.filter_by(usuario_id=data['id']).first()
-      print(current_user, 3000)
-    except:
-      return jsonify({'message': 'token is invalid'})
+      data = jwt.decode(token, secret, algorithms=["HS256"])
+      current_user = Usuarios.query.filter_by(usuario_id=data['id']).first()
+    except jwt.ExpiredSignatureError:
+      return jsonify({'message': 'Token expired, log in again'}), 403
+    except jwt.InvalidTokenError:
+      return jsonify({'message': 'Invalid token. Please log in again.'}), 403
 
     return f(current_user, *args, **kwargs)
   return decorator
