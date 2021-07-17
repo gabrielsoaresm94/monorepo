@@ -8,11 +8,8 @@ O monorepo, pode conter múltiplos pacotes dependendo dos requisitos da aplicaç
 - `packages`:
     - `api`: NestJS Api server (depende de `shared` + `python`)
     - `python`: Flask server (depende de `shared`)
-    <!-- - `client`: Next app (depende de `api` + `shared` + `python`) -->
+    - `web`: Next app (depende de `api` + `shared` + `python`)
     <!-- - `mobile`: React-native app (depende de `api` + `shared` + `python`) -->
-
-## Arquitetura
-TODO.
 
 ## Como instalar (sistemas linux)
 De início, como um projeto que roda com javascript, é preciso ter instalado o interpretador [nodejs](https://nodejs.org/en/), e o gerenciador de pacotes [yarn](https://yarnpkg.com/getting-started), por conta de ser um monorepo.
@@ -41,9 +38,6 @@ Exemplo de como criar uma migration:
 yarn run typeorm:cli -- migration:create -n <NomeMigration>
 ```
 
-### Python container
-Assim como o Docker, listado acima, será preciso ter instalado o Docker-compose, para a criação de um container com a linguagem Python e das bibliotecas que serão utilizadas pela mesma, para o pacote `/python` funcionar e as mudanças feitas nas pastas contidas em `/shared` forem captadas pelo container.
-
 ## Como rodar (sistemas linux)
 Utilizando a biblioteca `Lerna` e consumindo os scripts do `package.json`, o sistema inicia com os comandos listados a seguir. Lembrando que para o sistema funcionar, de maneira completa, é necessário rodar os pacotes `/api` e `/python`, além de iniciar o banco de dados, com o seguinte comando:
 ```
@@ -53,9 +47,9 @@ docker-compose up
 Alguns comandos listados:
 
 - _`yarn start`_: Roda o comando `yarn start` em todos os projetos ts:
-  - api: Inicia a api em modo dev na porta 3000
-- _`yarn run start:api`_: Inicia a api em modo dev na porta 3000
-- _`yarn run start:python`_: Inicia o pacote python em modo dev na porta 5000
+  - api: Inicia a api em modo dev na porta 3001
+- _`yarn run start:api`_: Inicia a api em modo dev na porta 3001
+- _`yarn run start:service`_: Inicia o pacote python em modo dev na porta 5000 e banco de dados
 - _`yarn lint`_: Aciona lint em todos os projetos ts
 <!-- - _`yarn build`_: Builda todos os projetos ts -->
 <!-- - _`yarn test`_: Testa todos os projetos ts -->

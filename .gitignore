@@ -2,6 +2,7 @@
 node_modules
 *.copy
 *.copy.*
+.env
 
 # JPEG
 *.jpg
