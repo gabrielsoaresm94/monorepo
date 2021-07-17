@@ -1,0 +1,974 @@
+---
+openapi: 3.0.0
+info:
+  title: Monorepo
+  description: API do monorepo.
+  version: 0.0.1
+  contact:
+    name: Monorepo
+    url: exemplo.dev
+    email: contato@exemplo.dev
+tags: []
+servers:
+- url: http://localhost:3000
+  description: Servidor de desenvolvimento
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    MessageStatus:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: boolean
+        metadata:
+          type: object
+      required:
+      - message
+      - status
+      - metadata
+    RequisicaoCriaUsuarioDTO:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Fulano dos Santos
+        email:
+          type: string
+          example: fulano@email.com
+        senha:
+          type: string
+          example: '123456'
+        papel:
+          type: string
+          example: usuario
+      required:
+      - nome
+      - email
+      - senha
+      - papel
+    RequisicaoEditaUsuarioDTO:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Beltrano da Silva
+        email:
+          type: string
+          example: beltrano@email.com
+        papel:
+          type: string
+          example: usuario
+      required:
+      - nome
+      - email
+      - papel
+    RequisicaoEditaPerfilDTO:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Beltrano da Silva
+        email:
+          type: string
+          example: beltrano@email.com
+      required:
+      - nome
+      - email
+    RequisicaoCriaDocumentoDTO:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Textos de Jorge Amado
+        descricao:
+          type: string
+          example: Alguns textos dos Jorge
+        assunto:
+          type: string
+          example: jorge-amado
+      required:
+      - nome
+      - descricao
+      - assunto
+    RequisicaoCriaAudioDTO:
+      type: object
+      properties:
+        documento_id:
+          type: string
+          example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+      required:
+      - documento_id
+    RequisicaoRegistroDTO:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Fulano dos Santos
+        email:
+          type: string
+          example: fulano@email.com
+        senha:
+          type: string
+          example: '123456'
+      required:
+      - nome
+      - email
+      - senha
+    RequisicaoLoginDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          example: fulano@email.com
+        senha:
+          type: string
+          example: '123456'
+      required:
+      - email
+      - senha
+paths:
+  "/usuarios":
+    get:
+      operationId: UsuariosController_listaUsuarios
+      summary: Listagem de usuários
+      parameters:
+      - name: usuario_id
+        required: true
+        in: query
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      - name: email
+        required: true
+        in: query
+        example: fulano@email.com
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Consulta obtida com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /usuarios} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /usuarios} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /usuarios} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /usuarios} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Usuários
+      security:
+      - bearer: []
+    post:
+      operationId: UsuariosController_criaUsuario
+      summary: Criação de usuário
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequisicaoCriaUsuarioDTO"
+      responses:
+        '200':
+          description: Criação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {POST - /usuarios} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {POST - /usuarios} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {POST - /usuarios} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {POST - /usuarios} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Usuários
+      security:
+      - bearer: []
+  "/usuarios/{usuario_id}":
+    get:
+      operationId: UsuariosController_encontraUsuario
+      summary: Encontra usuário
+      parameters:
+      - name: usuario_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Consulta obtida com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /usuarios/{usuario_id}} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /usuarios/{usuario_id}} - Usuário não tem
+                    permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /usuarios/{usuario_id}} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /usuarios/{usuario_id}} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Usuários
+      security:
+      - bearer: []
+    put:
+      operationId: UsuariosController_editaUsuario
+      summary: Edita usuário
+      parameters:
+      - name: usuario_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequisicaoEditaUsuarioDTO"
+      responses:
+        '200':
+          description: Edição realizada com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {PUT - /usuarios/{usuario_id}} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {PUT - /usuarios/{usuario_id}} - Usuário não tem
+                    permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {PUT - /usuarios/{usuario_id}} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {PUT - /usuarios/{usuario_id}} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Usuários
+      security:
+      - bearer: []
+    delete:
+      operationId: UsuariosController_removeUsuario
+      summary: Remove usuário
+      parameters:
+      - name: usuario_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Remoção feita com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {DELETE - /usuarios/{usuario_id}} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {DELETE - /usuarios/{usuario_id}} - Usuário não
+                    tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {DELETE - /usuarios/{usuario_id}} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {DELETE - /usuarios/{usuario_id}} - Ocorreu um
+                    erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Usuários
+      security:
+      - bearer: []
+  "/perfil":
+    get:
+      operationId: UsuariosController_perfil
+      summary: Encontra perfil do usuário
+      parameters: []
+      responses:
+        '200':
+          description: Perfil encontrado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /perfil} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /perfil} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /perfil} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /perfil} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Usuários
+      security:
+      - bearer: []
+    put:
+      operationId: UsuariosController_editarPerfil
+      summary: Edita perfil do usuário
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequisicaoEditaPerfilDTO"
+      responses:
+        '200':
+          description: Perfil editado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {PUT - /perfil} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {PUT - /perfil} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {PUT - /perfil} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {PUT - /perfil} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Usuários
+      security:
+      - bearer: []
+  "/documentos/{documento_id}":
+    put:
+      operationId: DocumentosController_editaDocumento
+      summary: Edita documento do usuário
+      parameters:
+      - name: documento_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequisicaoCriaDocumentoDTO"
+      responses:
+        '200':
+          description: Documento editado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {PUT - /documentos/{documento_id}} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {PUT - /documentos/{documento_id}} - Usuário não
+                    tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {PUT - /documentos/{documento_id}} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {PUT - /documentos/{documento_id}} - Ocorreu um
+                    erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Documentos
+      security:
+      - bearer: []
+    get:
+      operationId: DocumentosController_encontraDocumento
+      summary: Encontra documento do usuário
+      parameters:
+      - name: documento_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Documento encontrado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /documentos/{documento_id}} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /documentos/{documento_id}} - Usuário não
+                    tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /documentos/{documento_id}} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /documentos/{documento_id}} - Ocorreu um
+                    erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Documentos
+      security:
+      - bearer: []
+    delete:
+      operationId: DocumentosController_removeDocumento
+      summary: Remove documento do usuário
+      parameters:
+      - name: documento_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Documento removido com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {DELETE - /documentos/{documento_id}} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {DELETE - /documentos/{documento_id}} - Usuário
+                    não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {DELETE - /documentos/{documento_id}} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {DELETE - /documentos/{documento_id}} - Ocorreu
+                    um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Documentos
+      security:
+      - bearer: []
+  "/documentos":
+    get:
+      operationId: DocumentosController_listaDocumentos
+      summary: Lista documentos do usuário
+      parameters:
+      - name: assunto
+        required: true
+        in: query
+        example: jorge-amado
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Documentos listados com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /documentos} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /documentos} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /documentos} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /documentos} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Documentos
+      security:
+      - bearer: []
+    post:
+      operationId: DocumentosController_criaDocumento
+      summary: Cria documento
+      parameters:
+      - name: nome
+        required: true
+        in: query
+        example: Textos de Jorge Amado
+        schema:
+          type: string
+      - name: descricao
+        required: true
+        in: query
+        example: Alguns textos dos Jorge
+        schema:
+          type: string
+      - name: assunto
+        required: true
+        in: query
+        example: jorge-amado
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Documento criado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {POST - /documentos} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {POST - /documentos} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {POST - /documentos} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {POST - /documentos} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Documentos
+      security:
+      - bearer: []
+  "/audios":
+    post:
+      operationId: AudiosController_criaAudio
+      summary: Cria áudio, baseado no documento do usuário.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequisicaoCriaAudioDTO"
+      responses:
+        '200':
+          description: Áudio criado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /audios} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /audios} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Audios
+      security:
+      - bearer: []
+    get:
+      operationId: AudiosController_listaAudios
+      summary: Lista áudios criados pelo usuário
+      parameters: []
+      responses:
+        '200':
+          description: Áudios listados com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /audios - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /audios - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Audios
+      security:
+      - bearer: []
+  "/audios/{audio_id}":
+    get:
+      operationId: AudiosController_encontraAudio
+      summary: Encontra áudio criado pelo usuário
+      parameters:
+      - name: audio_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Áudio encontrado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /audios/{audio_id} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios/{audio_id} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /audios/{audio_id} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios/{audio_id} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Audios
+      security:
+      - bearer: []
+    delete:
+      operationId: AudiosController_removeAudio
+      summary: Remove áudio criado pelo usuário
+      parameters:
+      - name: audio_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Áudio removido com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {DELETE - /audios/{audio_id} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {DELETE - /audios/{audio_id} - Usuário não tem
+                    permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {DELETE - /audios/{audio_id} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {DELETE - /audios/{audio_id} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Audios
+      security:
+      - bearer: []
+  "/audios/{audio_id}:download":
+    get:
+      operationId: AudiosController_download
+      summary: Faz download do áudio criado pelo usuário
+      parameters:
+      - name: audio_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Download, do áudio, realizado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /audios/{audio_id}:download} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios/{audio_id}:download} - Usuário não
+                    tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /audios/{audio_id}:download} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios/{audio_id}:download} - Ocorreu um
+                    erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Audios
+      security:
+      - bearer: []
+  "/audios/{audio_id}:play":
+    get:
+      operationId: AudiosController_play
+      summary: Toca áudio criado pelo usuário
+      parameters:
+      - name: audio_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Play, do áudio, realizado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {GET - /audios/{audio_id}:play} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios/{audio_id}:play} - Usuário não tem
+                    permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {GET - /audios/{audio_id}:play} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {GET - /audios/{audio_id}:play} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Audios
+      security:
+      - bearer: []
+  "/cadastro":
+    post:
+      operationId: AuthController_cadastro
+      summary: Cadastra usuário
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequisicaoRegistroDTO"
+      responses:
+        '200':
+          description: Cadastro realizado com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '500':
+          description: "[ERRO] {POST - /cadastro} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {POST - /cadastro} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Autenticação
+  "/login":
+    post:
+      operationId: AuthController_login
+      summary: Inicia sessão  usuário
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequisicaoLoginDTO"
+      responses:
+        '200':
+          description: Sessão iniciada com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '500':
+          description: "[ERRO] {POST - /login} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {POST - /login} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Autenticação

@@ -1,0 +1,100 @@
+---
+openapi: 3.0.0
+info:
+  title: Python service
+  description: (Package) - sernviço em python
+  version: 0.0.1
+  contact:
+    name: Python service
+    url: exemplo.dev
+    email: contato@exemplo.dev
+tags: []
+servers:
+- url: http://localhost:5000
+  description: Servidor de desenvolvimento
+components:
+paths:
+  "/audios":
+    post:
+      summary: Criação de áudio
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequisicaoCriaUsuarioDTO"
+      responses:
+        '200':
+          description: Criação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {POST - /audios} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {POST - /audios} - Usuário não tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {POST - /audios} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {POST - /audios} - Ocorreu um erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Áudios
+      security:
+      - bearer: []
+  "/audios/{audios_id}":
+    delete:
+      summary: Remove áudio
+      parameters:
+      - name: audios_id
+        required: true
+        in: path
+        example: c6ae78d2-24e8-42c4-ac58-92dc0c375805
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Remoção feita com sucesso
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageStatus"
+        '403':
+          description: "[ERRO] {DELETE - /audios/{audios_id}} - Acesso negado"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {DELETE - /audios/{audios_id}} - Usuário não
+                    tem permissão"
+                  status: false
+                  erro: Usuário não tem permissão
+                type: MessageStatus
+        '500':
+          description: "[ERRO] {DELETE - /audios/{audios_id}} - Erro do servidor"
+          content:
+            application/json:
+              schema:
+                example:
+                  message: "[ERRO] {DELETE - /audios/{audios_id}} - Ocorreu um
+                    erro"
+                  status: false
+                  erro: Erro ao inicializar objeto
+                type: MessageStatus
+      tags:
+      - Áudios
+      security:
+      - bearer: []

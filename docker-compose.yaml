@@ -1,9 +1,24 @@
 version: "3"
 services:
   python:
+    depends_on:
+      - db
     build: .
     ports: ['5000:5000']
     volumes:
       - "./packages/python/src:/app"
       - "./shared/images:/app/shared/images"
       - "./shared/audios:/app/shared/audios"
+  db:
+    image: "postgres:12"
+    hostname: postgres
+    restart: "always"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: "${PASS}"
+      POSTGRES_USER: "${USER_NAME}"
+volumes:
+  db:

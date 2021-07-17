@@ -21,20 +21,33 @@ De início, como um projeto que roda com javascript, é preciso ter instalado o 
 yarn install
 ```
 
-Depois disso será necessário dispor de uma imagem Docker do banco Postgres, para a criação de um container com o banco que será utilizado pelo sistema:
+Depois disso, para inicializar tanto o banco como os demais serviços (pacotes), com o seguinte comando:
 ```
-docker run --name <nome-banco> -e TZ=America/Sao_Paulo -e POSTGRES_PASSWORD=<senha> -p 5432:5432 -d postgres
-```
-Assim como o Docker, listado acima, será preciso ter instalado o Docker-compose, para a criação de um container com a linguagem Python e das bibliotecas que serão utilizadas pela mesma, para o pacote `/python` funcionar e as mudanças feitas nas pastas contidas em `/shared` forem captadas pelo container. Ele pode ser rodado de forma independente utilizando os comandos a seguir, para disparar o shell script que foi criado para automatizar o processo:
-```
-cd packages/python
-sudo bash ./start.sh
+docker-compose build
 ```
 
-## Como rodar (sistemas linux)
-Utilizando a biblioteca `Lerna` e consumindo os scripts do `package.json`, o sistema inicia com os comandos listados a seguir. Lembrando que para o sistema funcionar, de maneira completa, é necessário rodar os pacotes `/api` e `/python`, além de iniciar o banco de dados pelo Docker, executando os seguintes passos:
+### .env
+Necessário também copiar o arquivo, .env.example e colocar as informações sensíveis para o arquivo .env.
+
+### Migrations
+Rodar migrations escritas para gerar tabelas no banco:
 ```
-docker start <nome-banco>
+cd packages/api
+yarn run migration:run
+```
+
+Exemplo de como criar uma migration:
+```bash
+yarn run typeorm:cli -- migration:create -n <NomeMigration>
+```
+
+### Python container
+Assim como o Docker, listado acima, será preciso ter instalado o Docker-compose, para a criação de um container com a linguagem Python e das bibliotecas que serão utilizadas pela mesma, para o pacote `/python` funcionar e as mudanças feitas nas pastas contidas em `/shared` forem captadas pelo container.
+
+## Como rodar (sistemas linux)
+Utilizando a biblioteca `Lerna` e consumindo os scripts do `package.json`, o sistema inicia com os comandos listados a seguir. Lembrando que para o sistema funcionar, de maneira completa, é necessário rodar os pacotes `/api` e `/python`, além de iniciar o banco de dados, com o seguinte comando:
+```
+docker-compose up
 ```
 
 Alguns comandos listados:
