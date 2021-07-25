@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@monorepo/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "next": "11.0.1",
+    "next-transpile-modules": "^8.0.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "@monorepo/ui": "*"
   },
   "devDependencies": {
     "@types/react": "17.0.14",
