@@ -17,7 +17,7 @@ import * as rateLimit from 'express-rate-limit';
 /**
  * Constantes
  */
-const PORTA = 3000;
+const PORTA = 3001;
 const EXECULTA_LOCAL = true;
 const DESATIVA_LOG = false;
 const ATIVA_LOG = true;
