@@ -27,7 +27,6 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { RequestUser } from 'src/shared/decorators/req-user.decorator';
-import { MessageStatus } from 'src/shared/erros.helper';
 import { Role } from 'src/shared/guards/ role.enum';
 import { Roles } from 'src/shared/guards/roles.decorator';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
@@ -62,7 +61,6 @@ export class UsuariosController {
     @ApiOperation({ summary: 'Listagem de usuários' })
     @ApiOkResponse({
         description: 'Consulta obtida com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {GET - /usuarios} - Acesso negado',
@@ -72,7 +70,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -83,7 +80,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async listaUsuarios(
@@ -122,7 +118,6 @@ export class UsuariosController {
     @ApiOperation({ summary: 'Encontra usuário' })
     @ApiOkResponse({
         description: 'Consulta obtida com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {GET - /usuarios/{usuario_id}} - Acesso negado',
@@ -133,7 +128,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -145,7 +139,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async encontraUsuario(
@@ -182,7 +175,6 @@ export class UsuariosController {
     @ApiOperation({ summary: 'Criação de usuário' })
     @ApiOkResponse({
         description: 'Criação realizada com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {POST - /usuarios} - Acesso negado',
@@ -193,7 +185,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -204,7 +195,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async criaUsuario(
@@ -243,7 +233,6 @@ export class UsuariosController {
     @ApiOperation({ summary: 'Edita usuário' })
     @ApiOkResponse({
         description: 'Edição realizada com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {PUT - /usuarios/{usuario_id}} - Acesso negado',
@@ -254,7 +243,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -266,7 +254,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async editaUsuario(
@@ -308,7 +295,6 @@ export class UsuariosController {
     @ApiOperation({ summary: 'Remove usuário' })
     @ApiOkResponse({
         description: 'Remoção feita com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {DELETE - /usuarios/{usuario_id}} - Acesso negado',
@@ -319,7 +305,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -332,7 +317,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async removeUsuario(
@@ -456,7 +440,6 @@ export class UsuariosController {
     @ApiOperation({ summary: 'Encontra perfil do usuário' })
     @ApiOkResponse({
         description: 'Perfil encontrado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {GET - /perfil} - Acesso negado',
@@ -467,7 +450,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -480,7 +462,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async perfil(
@@ -514,7 +495,6 @@ export class UsuariosController {
     @ApiOperation({ summary: 'Edita perfil do usuário' })
     @ApiOkResponse({
         description: 'Perfil editado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {PUT - /perfil} - Acesso negado',
@@ -525,7 +505,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -538,7 +517,6 @@ export class UsuariosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiBody({ type: RequisicaoEditaPerfilDTO })

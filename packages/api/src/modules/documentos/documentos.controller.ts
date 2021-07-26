@@ -29,7 +29,6 @@ import { Roles } from 'src/shared/guards/roles.decorator';
 import { Role } from 'src/shared/guards/ role.enum';
 import { RequisicaoCriaDocumentoDTO } from './shared/dtos/req-post.dto';
 import { RequisicaoEncontraDocumentoDTO, RequisicaoListaDocumentosDTO } from './shared/dtos/req-get.dto';
-import { MessageStatus } from 'src/shared/erros.helper';
 import { map } from 'rxjs/operators';
 import { AudiosService } from '../audios/shared/services/http/audios.service';
 
@@ -57,7 +56,6 @@ export class DocumentosController {
     @ApiOperation({ summary: 'Edita documento do usuário' })
     @ApiOkResponse({
         description: 'Documento editado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {PUT - /documentos/{documento_id}} - Acesso negado',
@@ -68,7 +66,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -79,7 +76,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async editaDocumento(
@@ -124,7 +120,6 @@ export class DocumentosController {
     @ApiOperation({ summary: 'Lista documentos do usuário' })
     @ApiOkResponse({
         description: 'Documentos listados com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {GET - /documentos} - Acesso negado',
@@ -135,7 +130,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -146,7 +140,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async listaDocumentos(
@@ -186,7 +179,6 @@ export class DocumentosController {
     @ApiOperation({ summary: 'Encontra documento do usuário' })
     @ApiOkResponse({
         description: 'Documento encontrado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {GET - /documentos/{documento_id}} - Acesso negado',
@@ -197,7 +189,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -208,7 +199,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async encontraDocumento(
@@ -247,7 +237,6 @@ export class DocumentosController {
     @ApiOperation({ summary: 'Cria documento' })
     @ApiOkResponse({
         description: 'Documento criado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {POST - /documentos} - Acesso negado',
@@ -258,7 +247,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -269,7 +257,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     @UseInterceptors(
@@ -381,7 +368,6 @@ export class DocumentosController {
     @ApiOperation({ summary: 'Remove documento do usuário' })
     @ApiOkResponse({
         description: 'Documento removido com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {DELETE - /documentos/{documento_id}} - Acesso negado',
@@ -392,7 +378,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
         },
     })
     @ApiInternalServerErrorResponse({
@@ -403,7 +388,6 @@ export class DocumentosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async removeDocumento(

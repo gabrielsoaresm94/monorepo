@@ -20,7 +20,6 @@ import { RequestUser } from 'src/shared/decorators/req-user.decorator';
 import { DocumentosService } from '../documentos/shared/services/http/documentos.service';
 
 import { map } from 'rxjs/operators';
-import { MessageStatus } from 'src/shared/erros.helper';
 import { RequisicaoEncontraAudioDTO } from './shared/dtos/req-get.dto';
 import { RequisicaoCriaAudioDTO } from './shared/dtos/req-post.dto';
 
@@ -52,7 +51,6 @@ export class AudiosController {
     @ApiOperation({ summary: 'Cria áudio, baseado no documento do usuário.' })
     @ApiOkResponse({
         description: 'Áudio criado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {GET - /audios} - Acesso negado',
@@ -63,7 +61,7 @@ export class AudiosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
+
         },
     })
     @ApiInternalServerErrorResponse({
@@ -74,7 +72,6 @@ export class AudiosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async criaAudio(
@@ -171,7 +168,6 @@ export class AudiosController {
     @ApiOperation({ summary: 'Lista áudios criados pelo usuário' })
     @ApiOkResponse({
         description: 'Áudios listados com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {GET - /audios - Acesso negado',
@@ -182,7 +178,7 @@ export class AudiosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
+
         },
     })
     @ApiInternalServerErrorResponse({
@@ -193,7 +189,6 @@ export class AudiosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async listaAudios(
@@ -227,7 +222,6 @@ export class AudiosController {
     @ApiOperation({ summary: 'Encontra áudio criado pelo usuário' })
     @ApiOkResponse({
         description: 'Áudio encontrado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {GET - /audios/{audio_id} - Acesso negado',
@@ -238,7 +232,7 @@ export class AudiosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
+
         },
     })
     @ApiInternalServerErrorResponse({
@@ -249,7 +243,6 @@ export class AudiosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async encontraAudio(
@@ -286,7 +279,6 @@ export class AudiosController {
     @ApiOperation({ summary: 'Remove áudio criado pelo usuário' })
     @ApiOkResponse({
         description: 'Áudio removido com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
         description: '[ERRO] {DELETE - /audios/{audio_id} - Acesso negado',
@@ -297,7 +289,7 @@ export class AudiosController {
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
+
         },
     })
     @ApiInternalServerErrorResponse({
@@ -308,7 +300,6 @@ export class AudiosController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async removeAudio(
@@ -388,35 +379,33 @@ export class AudiosController {
     }
 
     @HttpCode(200)
-    @Get(':audio_id[:]download')
+    @Get(':audio_id/acoes/download')
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Faz download do áudio criado pelo usuário' })
     @ApiOkResponse({
         description: 'Download, do áudio, realizado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
-        description: '[ERRO] {GET - /audios/{audio_id}:download} - Acesso negado',
+        description: '[ERRO] {GET - /audios/{audio_id}/acoes/download} - Acesso negado',
         schema: {
             example: {
                 message:
-                    '[ERRO] {GET - /audios/{audio_id}:download} - Usuário não tem permissão',
+                    '[ERRO] {GET - /audios/{audio_id}/acoes/download} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
+
         },
     })
     @ApiInternalServerErrorResponse({
-        description: '[ERRO] {GET - /audios/{audio_id}:download} - Erro do servidor',
+        description: '[ERRO] {GET - /audios/{audio_id}/acoes/download} - Erro do servidor',
         schema: {
             example: {
-                message: '[ERRO] {GET - /audios/{audio_id}:download} - Ocorreu um erro',
+                message: '[ERRO] {GET - /audios/{audio_id}/acoes/download} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async download(
@@ -446,35 +435,33 @@ export class AudiosController {
     }
 
     @HttpCode(200)
-    @Get(':audio_id[:]play')
+    @Get(':audio_id/acoes/play')
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Toca áudio criado pelo usuário' })
     @ApiOkResponse({
         description: 'Play, do áudio, realizado com sucesso',
-        type: MessageStatus,
     })
     @ApiForbiddenResponse({
-        description: '[ERRO] {GET - /audios/{audio_id}:play} - Acesso negado',
+        description: '[ERRO] {GET - /audios/{audio_id}/acoes/play} - Acesso negado',
         schema: {
             example: {
                 message:
-                    '[ERRO] {GET - /audios/{audio_id}:play} - Usuário não tem permissão',
+                    '[ERRO] {GET - /audios/{audio_id}/acoes/play} - Usuário não tem permissão',
                 status: false,
                 erro: 'Usuário não tem permissão',
             },
-            type: 'MessageStatus',
+
         },
     })
     @ApiInternalServerErrorResponse({
-        description: '[ERRO] {GET - /audios/{audio_id}:play} - Erro do servidor',
+        description: '[ERRO] {GET - /audios/{audio_id}/acoes/play} - Erro do servidor',
         schema: {
             example: {
-                message: '[ERRO] {GET - /audios/{audio_id}:play} - Ocorreu um erro',
+                message: '[ERRO] {GET - /audios/{audio_id}/acoes/play} - Ocorreu um erro',
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     async play(
