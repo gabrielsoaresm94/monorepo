@@ -14,7 +14,6 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import { MessageStatus } from 'src/shared/erros.helper';
 import { UsuariosService } from '../usuarios/shared/services/http/usuarios.service';
 import { RequisicaoLoginDTO } from './shared/dtos/req-login.dto';
 import { RequisicaoRegistroDTO } from './shared/dtos/req-registro.dto';
@@ -33,7 +32,6 @@ export class AuthController {
     @ApiOperation({ summary: 'Cadastra usuário' })
     @ApiOkResponse({
         description: 'Cadastro realizado com sucesso',
-        type: MessageStatus,
     })
     @ApiInternalServerErrorResponse({
         description: '[ERRO] {POST - /cadastro} - Erro do servidor',
@@ -43,7 +41,6 @@ export class AuthController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     public async cadastro(
@@ -75,7 +72,6 @@ export class AuthController {
     @ApiOperation({ summary: 'Inicia sessão  usuário' })
     @ApiOkResponse({
         description: 'Sessão iniciada com sucesso',
-        type: MessageStatus,
     })
     @ApiInternalServerErrorResponse({
         description: '[ERRO] {POST - /login} - Erro do servidor',
@@ -85,7 +81,6 @@ export class AuthController {
                 status: false,
                 erro: 'Erro ao inicializar objeto',
             },
-            type: 'MessageStatus',
         },
     })
     public async login(
