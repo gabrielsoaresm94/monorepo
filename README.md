@@ -8,11 +8,18 @@ O monorepo, pode conter múltiplos pacotes dependendo dos requisitos da aplicaç
 - `packages`:
     - `api`: NestJS Api server (depende de `shared` + `python`)
     - `python`: Flask server (depende de `shared`)
-    - `web`: Next app (depende de `api` + `shared` + `python`)
+    - `ui`: React components, storybook
+    - `web`: Next app (depende de `ui` + `api` + `shared` + `python`)
     <!-- - `mobile`: React-native app (depende de `api` + `shared` + `python`) -->
 
 ## Como instalar (sistemas linux)
 De início, como um projeto que roda com javascript, é preciso ter instalado o interpretador [nodejs](https://nodejs.org/en/), e o gerenciador de pacotes [yarn](https://yarnpkg.com/getting-started), por conta de ser um monorepo.
+
+OBS: Caso queira utilizar a `interface`, além da `api` do projeto, instale primeiro as dependências dos pacotes `web` e `ui`, antes de instalar o restante da aplicação:
+```
+yarn workspace @monorepo/ui install
+yarn workspace @monorepo/web install
+```
 
 ```
 yarn install
