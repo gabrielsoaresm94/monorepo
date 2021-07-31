@@ -5,7 +5,7 @@
   "typings": "/dist/index",
   "scripts": {
     "test": "jest",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "eslint \"{src,stories}/**/*.tsx\" --fix",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "build": "tsc -p ."
@@ -20,8 +20,10 @@
     "@storybook/react": "^6.3.5",
     "@testing-library/react": "^12.0.0",
     "@types/react": "^17.0.15",
+    "@typescript-eslint/eslint-plugin": "3.0.2",
     "babel-jest": "^27.0.6",
     "babel-loader": "^8.2.2",
+    "eslint": "7.1.0",
     "jest": "26.0.1",
     "react": "^17.0.2",
     "react-docgen-typescript-loader": "^3.7.2",

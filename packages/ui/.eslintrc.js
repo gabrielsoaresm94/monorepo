@@ -1,24 +1,35 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        ecmaVersion: 2018,
+        ecmaFeatures: {
+            jsx: true
+        },
+        ecmaVersion: 12,
         // project: 'tsconfig.json',
         sourceType: 'module',
     },
     env: {
+        browser: true,
+        es2020: true,
         node: true,
-        jest: true,
+        jest: true
     },
     plugins: [
         '@typescript-eslint',
-        'import'
+        'import',
+        'react',
+        '@typescript-eslint',
+        // 'prettier'
     ],
     extends: [
         'eslint:recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:react/recommended',
+        // 'standard',
         'plugin:@typescript-eslint/recommended',
-        'prettier',
-        'prettier/@typescript-eslint',
+        // 'prettier',
+        // 'prettier/@typescript-eslint',
+        // 'prettier/standard',
+        // 'prettier/react'
     ],
     root: true,
     rules: {
@@ -32,6 +43,21 @@ module.exports = {
         // ],
         // "arrow-body-style": "off",
 	    // "prefer-arrow-callback": "off"
+        // 'prettier/prettier': 'error',
+        // 'space-before-function-paren': 'off',
+        // 'react/prop-types': 'off'
+        'react/jsx-one-expression-per-line': 'off',
+        'react/jsx-props-no-spreading':'off',
+        'react/prop-types': 'off',
+        'no-unused-expressions': 'off',
+        'import/prefer-default-export': 'off',
+        '@typescript-eslint/camelcase': 'off',
+        '@typescript-eslint/explicit-function-return-type': [
+          'error',
+          {
+            'allowExpressions': true
+          }
+        ]
     },
     ignorePatterns: [
         "**/*.spec.*",
