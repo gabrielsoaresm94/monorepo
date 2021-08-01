@@ -1,9 +1,10 @@
-import Head from 'next/head'
+import React from 'react';
+import Head from 'next/head';
 import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.css';
 import { Title } from '@monorepo/ui';
 
-export default function Home() {
+export default function Home(): any { // TODO - React.FC<>
   return (
     <div className={styles.container}>
       <Head>
@@ -68,7 +69,7 @@ export default function Home() {
     </div>
   )
 }
-function dynamic(arg0: () => Promise<any>) {
+function dynamic(arg0: () => Promise<any>): void {
   throw new Error('Function not implemented.');
 }
 
