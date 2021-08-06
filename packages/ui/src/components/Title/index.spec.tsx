@@ -5,12 +5,12 @@ import { Title } from "./index";
 
 describe("Title component", () => {
   it("should be able render a title with a text", () => {
-    const testTitle = 'Novo título';
+    const text = 'Novo título';
 
     const { getByText } = render(
-      <Title>{testTitle}</Title>
+      <Title>{text}</Title>
     );
 
-    expect(getByText(testTitle)).toBeTruthy();
+    expect(getByText(text)).toBeTruthy();
   });
 });
