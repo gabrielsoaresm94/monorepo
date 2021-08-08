@@ -15,14 +15,9 @@ O monorepo, pode conter múltiplos pacotes dependendo dos requisitos da aplicaç
 ## Como instalar (sistemas linux)
 De início, como um projeto que roda com javascript, é preciso ter instalado o interpretador [nodejs](https://nodejs.org/en/), e o gerenciador de pacotes [yarn](https://yarnpkg.com/getting-started), por conta de ser um monorepo.
 
-OBS: Caso queira utilizar a `interface`, além da `api` do projeto, instale primeiro as dependências dos pacotes `web` e `ui`, antes de instalar o restante da aplicação:
 ```
-yarn workspace @monorepo/ui install
-yarn workspace @monorepo/web install
-```
-
-```
-yarn install
+yarn
+# or yarn install
 ```
 
 Depois disso, para inicializar tanto o banco como os demais serviços (pacotes), com o seguinte comando:
