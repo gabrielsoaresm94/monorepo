@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import './button.css';
 
-interface ButtonProps {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   /**
    * Is this the principal call to action on the page?
    */
@@ -22,12 +22,12 @@ interface ButtonProps {
    * Optional click handler
    */
   onClick?: () => void;
-}
+};
 
 /**
  * Primary UI component for user interaction
  */
-export const Button = ({
+export const Button: React.FC<ButtonProps> = ({
   primary = false,
   size = 'medium',
   backgroundColor,

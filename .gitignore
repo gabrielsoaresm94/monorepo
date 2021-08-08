@@ -1,4 +1,5 @@
 # Default
+.github
 node_modules
 *.copy
 *.copy.*

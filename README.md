@@ -8,14 +8,16 @@ O monorepo, pode conter múltiplos pacotes dependendo dos requisitos da aplicaç
 - `packages`:
     - `api`: NestJS Api server (depende de `shared` + `python`)
     - `python`: Flask server (depende de `shared`)
-    - `web`: Next app (depende de `api` + `shared` + `python`)
+    - `ui`: React components, storybook
+    - `web`: Next app (depende de `ui` + `api` + `shared` + `python`)
     <!-- - `mobile`: React-native app (depende de `api` + `shared` + `python`) -->
 
 ## Como instalar (sistemas linux)
 De início, como um projeto que roda com javascript, é preciso ter instalado o interpretador [nodejs](https://nodejs.org/en/), e o gerenciador de pacotes [yarn](https://yarnpkg.com/getting-started), por conta de ser um monorepo.
 
 ```
-yarn install
+yarn
+# or yarn install
 ```
 
 Depois disso, para inicializar tanto o banco como os demais serviços (pacotes), com o seguinte comando:
